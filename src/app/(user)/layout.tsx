@@ -6,10 +6,19 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <Navigation />
-      {children}
-      <Footer />
-    </div>
+    <>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="w-full">
+          <Navigation />
+          <SidebarTrigger />
+          {children}
+          <Footer />
+        </div>
+      </SidebarProvider>
+    </>
   );
 }
+
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
