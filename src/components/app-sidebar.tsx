@@ -25,6 +25,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { API } from "@/lib/constants";
+import { ServiceCategoryResponse } from "@/lib/modules/serviceCategory/serviceCategory.type";
 
 // Menu items.
 const items = [
@@ -58,25 +59,12 @@ const items = [
 async function getCategories() {
   const res = await fetch(`${API.CATEGORIES.GET_ALL}`);
   const data = await res.json();
-  return data.data.serviceCategories;
+  return data as ServiceCategoryResponse;
 }
-
-async function getSubCategories() {
-  const res = await fetch(`${API.SUBCATEGORIES.GET_ALL}`);
-  const data = await res.json();
-  return data.data.serviceSubCategories;
-}
-
-
 
 export async function AppSidebar() {
  
-    const categoriesData = getCategories();
-    const subCategoriesData = getSubCategories();
-
-    const [categories, subCategories] = await Promise.all([categoriesData, subCategoriesData]);
-
-    console.log(categories, subCategories);
+    const categories = await getCategories();
 
   return (
     <Sidebar collapsible="icon">
@@ -87,57 +75,34 @@ export async function AppSidebar() {
         <hr className="mt-2" />
       </SidebarHeader>
 
-      <Collapsible defaultOpen className="group/collapsible hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-        <SidebarGroup>
-          <SidebarGroupLabel asChild>
-            <CollapsibleTrigger>
-              Coding
-              <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </CollapsibleTrigger>
-          </SidebarGroupLabel>
-          <CollapsibleContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="hover:bg-gray-200 transition-all duration-300">
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </CollapsibleContent>
-        </SidebarGroup>
-      </Collapsible>
-
-      <Collapsible  className="group/collapsible hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-        <SidebarGroup>
-          <SidebarGroupLabel asChild>
-            <CollapsibleTrigger>
-              Video & Audio
-              <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </CollapsibleTrigger>
-          </SidebarGroupLabel>
-          <CollapsibleContent>
-            <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-            </SidebarGroupContent>
-          </CollapsibleContent>
-        </SidebarGroup>
-      </Collapsible>
+      {categories.data.serviceCategories.map((category) => (
+        <Collapsible key={category.id} className="group/collapsible hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger>
+                {category.name}
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {category.ServiceSubCategory.map((subCategory) => (
+                    <SidebarMenuItem key={subCategory.id}>
+                      <SidebarMenuButton asChild className="hover:bg-gray-200 transition-all duration-300">
+                        <a href="#">
+                          {subCategory.name}
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+      ))}
+   
     </Sidebar>
   );
 }
