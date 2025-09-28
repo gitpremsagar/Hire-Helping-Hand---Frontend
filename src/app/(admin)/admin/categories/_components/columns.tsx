@@ -59,24 +59,19 @@ export const columns: ColumnDef<ServiceCategory>[] = [
   },
   {
     accessorKey: "ServiceSubCategory",
-    header: "Subcategories",
+    header: "Sub Categories",
     cell: ({ row }) => {
       const subcategories = row.original.ServiceSubCategory || []
       return (
         <div className="flex flex-wrap gap-1">
           {subcategories.length > 0 ? (
-            subcategories.slice(0, 2).map((sub) => (
+            subcategories.map((sub) => (
               <Badge key={sub.id} variant="outline" className="text-xs">
                 {sub.name}
               </Badge>
             ))
           ) : (
             <span className="text-muted-foreground text-sm">No subcategories</span>
-          )}
-          {subcategories.length > 2 && (
-            <Badge variant="outline" className="text-xs">
-              +{subcategories.length - 2} more
-            </Badge>
           )}
         </div>
       )
