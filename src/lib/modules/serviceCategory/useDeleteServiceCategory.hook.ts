@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { serviceCategoryService } from "./serviceCategory.service";
@@ -9,32 +9,28 @@ interface UseDeleteServiceCategoryReturn {
   deleteServiceCategory: (id: string) => Promise<void>;
   isDeleting: boolean;
   isDeleted: boolean;
-  isRefreshing: boolean;
+  isPending: boolean;
 }
 
 export const useDeleteServiceCategory = (): UseDeleteServiceCategoryReturn => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const router = useRouter();
-
+  const [isPending, startTransition] = useTransition();
   const deleteServiceCategory = async (id: string) => {
     try {
       setIsDeleting(true);
       const response = await serviceCategoryService.delete(id);
-      
+
       if (response.success) {
         toast.success(response.message || "Category deleted successfully");
         setIsDeleted(true);
-        setIsRefreshing(true);
         toast.loading("Refreshing page...", { id: "refresh" });
-        router.refresh(); // Refresh the page to update the data
-        
+        startTransition(() => {
+          router.refresh(); // Refresh the page to update the data
+        });
         // Reset refreshing state after a short delay to allow for page refresh
-        setTimeout(() => {
-          setIsRefreshing(false);
-          toast.dismiss("refresh");
-        }, 1000);
+        toast.dismiss("refresh");
       } else {
         toast.error(response.message || "Failed to delete category");
         setIsDeleted(false);
@@ -53,6 +49,6 @@ export const useDeleteServiceCategory = (): UseDeleteServiceCategoryReturn => {
     deleteServiceCategory,
     isDeleting,
     isDeleted,
-    isRefreshing,
+    isPending,
   };
 };

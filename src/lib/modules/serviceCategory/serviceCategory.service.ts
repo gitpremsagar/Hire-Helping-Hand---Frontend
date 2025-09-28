@@ -17,7 +17,6 @@ export const serviceCategoryService = {
     }
   },
   create: async (data: CreateServiceCategoryRequest) => {
-    console.log(data);
     try {
       const response = await customAxios.post(API.CATEGORIES.CREATE, data);
       return response.data;

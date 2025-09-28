@@ -132,27 +132,25 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const category = row.original
-      const { deleteServiceCategory, isDeleting, isDeleted, isRefreshing } = useDeleteServiceCategory()
+      const { deleteServiceCategory, isDeleting, isDeleted, isPending } = useDeleteServiceCategory()
       const [isDropdownOpen, setIsDropdownOpen] = useState(false)
       const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
-      const handleDelete = async () => {
+      const handleDelete = async (e: React.MouseEvent) => {
+        e.preventDefault() // Prevent default dialog close behavior
         try {
           await deleteServiceCategory(category.id)
-          // Close both dialogs after successful deletion
-          // setIsDeleteDialogOpen(false)
-          // setIsDropdownOpen(false)
+          // Close the dialog after successful deletion
+          setIsDeleteDialogOpen(false)
         } catch (error) {
           console.error("Failed to delete category:", error)
+          // Keep dialog open on error so user can try again
         }
       }
 
-      // Show refreshing state in the alert dialog
-      const isProcessing = isDeleting || isRefreshing
 
       const handleDeleteClick = () => {
         setIsDeleteDialogOpen(true)
-        setIsDropdownOpen(false) // Close dropdown when opening delete dialog
       }
 
       return (
@@ -194,43 +192,23 @@ export const columns: ColumnDef<ServiceCategory>[] = [
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  {isProcessing ? (
-                    isDeleting ? "Deleting Category..." : "Refreshing Page..."
-                  ) : (
-                    "Are you sure?"
-                  )}
+                 {isDeleting ? "Deleting Category..." : "Are you sure?"}
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  {isProcessing ? (
-                    isDeleting ? (
-                      <>
-                        Please wait while we delete the category
-                        <strong> "{category.name}"</strong> and all associated data.
-                      </>
-                    ) : (
-                      <>
-                        Category deleted successfully! Refreshing the page to update the data...
-                      </>
-                    )
-                  ) : (
-                    <>
-                      This action cannot be undone. This will permanently delete the category
-                      <strong> "{category.name}"</strong> and remove all associated data.
-                    </>
-                  )}
+                  {isDeleting ? "Please wait while we delete the category" : "This action cannot be undone. This will permanently delete the category"}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDelete}
-                  disabled={isProcessing}
+                  disabled={isDeleting}
                   className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
                 >
-                  {isProcessing ? (
+                    {isDeleting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isDeleting ? "Deleting..." : "Refreshing..."}
+                      Deleting...
                     </>
                   ) : (
                     "Delete"
