@@ -13,7 +13,7 @@ export interface ServiceCategory {
     ServiceSubCategory: ServiceSubCategory[];
 }
 
-interface ServiceSubCategory {
+export interface ServiceSubCategory {
     id: string;
     name: string;
     description: string;
