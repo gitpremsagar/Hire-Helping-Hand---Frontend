@@ -20,7 +20,7 @@ export const useCreateServiceCategory = (): UseCreateServiceCategoryReturn => {
     try {
       setIsSubmitting(true);
       const response = await serviceCategoryService.create(data);
-      console.log(response);
+      
       if (response.success) {
         toast.success(response.message);
         router.push("/admin/categories");

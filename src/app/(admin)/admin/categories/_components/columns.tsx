@@ -1,10 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ServiceCategory } from "@/lib/modules/serviceCategory/serviceCategory.type"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react"
+import { MoreHorizontal, Edit, Trash2, Eye, Loader2 } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useDeleteServiceCategory } from "@/lib/modules/serviceCategory/useDeleteServiceCategory.hook"
 
 export const columns: ColumnDef<ServiceCategory>[] = [
   {
@@ -119,37 +132,114 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const category = row.original
+      const { deleteServiceCategory, isDeleting, isDeleted, isRefreshing } = useDeleteServiceCategory()
+      const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+      const handleDelete = async () => {
+        try {
+          await deleteServiceCategory(category.id)
+          // Close both dialogs after successful deletion
+          // setIsDeleteDialogOpen(false)
+          // setIsDropdownOpen(false)
+        } catch (error) {
+          console.error("Failed to delete category:", error)
+        }
+      }
+
+      // Show refreshing state in the alert dialog
+      const isProcessing = isDeleting || isRefreshing
+
+      const handleDeleteClick = () => {
+        setIsDeleteDialogOpen(true)
+        setIsDropdownOpen(false) // Close dropdown when opening delete dialog
+      }
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(category.id)}
-            >
-              Copy category ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Eye className="mr-2 h-4 w-4" />
-              View details
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit category
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete category
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(category.id)}
+              >
+                Copy category ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Eye className="mr-2 h-4 w-4" />
+                View details
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit category
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                className="text-red-600"
+                onClick={handleDeleteClick}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete category
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {isProcessing ? (
+                    isDeleting ? "Deleting Category..." : "Refreshing Page..."
+                  ) : (
+                    "Are you sure?"
+                  )}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {isProcessing ? (
+                    isDeleting ? (
+                      <>
+                        Please wait while we delete the category
+                        <strong> "{category.name}"</strong> and all associated data.
+                      </>
+                    ) : (
+                      <>
+                        Category deleted successfully! Refreshing the page to update the data...
+                      </>
+                    )
+                  ) : (
+                    <>
+                      This action cannot be undone. This will permanently delete the category
+                      <strong> "{category.name}"</strong> and remove all associated data.
+                    </>
+                  )}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={isProcessing}
+                  className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isDeleting ? "Deleting..." : "Refreshing..."}
+                    </>
+                  ) : (
+                    "Delete"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )
     },
   },
