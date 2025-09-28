@@ -27,35 +27,6 @@ import {
 import { API } from "@/lib/constants";
 import { ServiceCategoryResponse } from "@/lib/modules/serviceCategory/serviceCategory.type";
 
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
-
 async function getCategories() {
   const res = await fetch(`${API.CATEGORIES.GET_ALL}`);
   const data = await res.json();
@@ -69,8 +40,8 @@ export async function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarContent>
-          <Link href="/">Hire Helping Hand</Link>
+        <SidebarContent className="text-lg font-semibold">
+          Services
         </SidebarContent>
         <hr className="mt-2" />
       </SidebarHeader>
@@ -93,6 +64,7 @@ export async function AppSidebar() {
                         <a href="#">
                           {subCategory.name}
                         </a>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-arrow-big-left-icon lucide-arrow-big-left"><path d="M13 9a1 1 0 0 1-1-1V5.061a1 1 0 0 0-1.811-.75l-6.835 6.836a1.207 1.207 0 0 0 0 1.707l6.835 6.835a1 1 0 0 0 1.811-.75V16a1 1 0 0 1 1-1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1z"/></svg>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
