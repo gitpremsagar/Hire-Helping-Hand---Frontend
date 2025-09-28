@@ -97,9 +97,19 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     header: "Created",
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"))
+      // Use consistent date formatting to avoid hydration mismatches
+      // Format as "24-April-2025" to be consistent across server and client
+      const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ]
+      const day = date.getDate()
+      const month = months[date.getMonth()]
+      const year = date.getFullYear()
+      const formattedDate = `${day}-${month}-${year}`
       return (
         <div className="text-sm">
-          {date.toLocaleDateString()}
+          {formattedDate}
         </div>
       )
     },

@@ -12,7 +12,9 @@ export default function AdminLayout({
         <div className="w-full">
           <Navigation />
           <SidebarTrigger />
-          {children}
+          <main className="p-4 min-h-screen">
+            {children}
+          </main>
           <Footer />
         </div>
       </SidebarProvider>
