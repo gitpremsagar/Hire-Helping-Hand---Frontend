@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AddCategoryButton } from "./_components/AddCategoryButton";
 
 async function getCategories() {
   try {
@@ -68,10 +69,7 @@ export default async function CategoryPage() {
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Category
-          </Button>
+          <AddCategoryButton />            
         </div>
       </div>
 
@@ -98,10 +96,7 @@ export default async function CategoryPage() {
               <p className="text-muted-foreground mb-4">
                 Get started by creating your first service category.
               </p>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Category
-              </Button>
+              <AddCategoryButton />
             </div>
           )}
         </CardContent>

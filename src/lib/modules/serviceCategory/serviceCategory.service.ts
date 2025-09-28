@@ -1,8 +1,12 @@
 import { API } from "@/lib/constants";
 import customAxios from "@/lib/custom-axios-requests";
 import { ServiceCategory } from "./serviceCategory.type";
+import { z } from "zod";
+import { createServiceCategorySchema } from "./serviceCategory.schemas";
 
-export const ServiceCategoryService = {
+type CreateServiceCategoryRequest = z.infer<typeof createServiceCategorySchema>;
+
+export const serviceCategoryService = {
   getAll: async () => {
     try {
       const response = await customAxios.get(API.CATEGORIES.GET_ALL);
@@ -12,7 +16,8 @@ export const ServiceCategoryService = {
       throw error;
     }
   },
-  create: async (data: ServiceCategory) => {
+  create: async (data: CreateServiceCategoryRequest) => {
+    console.log(data);
     try {
       const response = await customAxios.post(API.CATEGORIES.CREATE, data);
       return response.data;
