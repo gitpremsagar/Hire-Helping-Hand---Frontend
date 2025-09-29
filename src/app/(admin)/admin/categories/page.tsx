@@ -17,7 +17,7 @@ import { RefreshButton } from "./_components/RefreshButton";
 async function getCategories() {
   try {
     const res = await fetch(`${API.CATEGORIES.GET_ALL}`, {
-      cache: "no-store", // Ensure fresh data
+      // cache: "no-store", // Ensure fresh data
       headers: {
         "Content-Type": "application/json",
       },
