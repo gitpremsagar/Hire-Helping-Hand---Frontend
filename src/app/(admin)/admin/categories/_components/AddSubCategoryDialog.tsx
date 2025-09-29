@@ -81,7 +81,7 @@ export function AddSubCategoryDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Sub Category to "{category.name}"</DialogTitle>
+          <DialogTitle>Add Sub Category to &quot;{category.name}&quot;</DialogTitle>
           <DialogDescription>
             Create a new subcategory under the service category &quot;{category.name}&quot;
           </DialogDescription>

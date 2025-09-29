@@ -18,6 +18,9 @@ export interface ServiceSubCategory {
     name: string;
     description: string;
     isNew: boolean;
+    serviceCategoryId: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export type ServiceCategoryResponse = {

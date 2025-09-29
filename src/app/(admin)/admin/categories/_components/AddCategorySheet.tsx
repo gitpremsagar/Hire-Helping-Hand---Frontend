@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Plus, Tag, Sparkles, CheckCircle2 } from "lucide-react";
 import {
@@ -96,7 +95,7 @@ export const AddCategorySheet = () => {
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Choose a clear, descriptive name for your category</li>
                 <li>• Add a helpful description for users</li>
-                <li>• Mark as "new" to highlight it to users</li>
+                <li>• Mark as &quot;new&quot; to highlight it to users</li>
               </ul>
             </CardContent>
           </Card>
@@ -164,7 +163,7 @@ export const AddCategorySheet = () => {
                               Mark as new category
                             </FormLabel>
                             <p className="text-xs text-muted-foreground">
-                              This will highlight the category as "new" to users
+                              This will highlight the category as &quot;new&quot; to users
                             </p>
                           </div>
                         </FormItem>

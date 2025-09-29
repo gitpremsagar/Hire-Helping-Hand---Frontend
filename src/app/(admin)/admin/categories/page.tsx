@@ -4,20 +4,13 @@ import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
 import { Button } from "@/components/ui/button";
 import { Plus, RefreshCw } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { AddCategorySheet } from "./_components/AddCategorySheet";
 import { RefreshButton } from "./_components/RefreshButton";
 
 async function getCategories() {
   try {
     const res = await fetch(`${API.CATEGORIES.GET_ALL}`, {
-      // cache: "no-store", // Ensure fresh data
+      cache: "no-store", // Ensure fresh data
       headers: {
         "Content-Type": "application/json",
       },
@@ -55,50 +48,59 @@ export default async function CategoryPage() {
   const categories = categoriesData.data.serviceCategories;
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+    <div className="container mx-auto py-8 space-y-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
             Service Categories
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-base sm:text-lg text-muted-foreground">
             Manage service categories and their subcategories
           </p>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
           <RefreshButton />
           <AddCategorySheet />            
         </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Categories Overview</CardTitle>
-          <CardDescription>
-            {categories.length > 0
-              ? `Showing ${categories.length} service categories`
-              : "No categories found"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {categories.length > 0 ? (
-            <DataTable columns={columns} data={categories} />
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="rounded-full bg-muted p-3 mb-4">
-                <Plus className="h-6 w-6 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">
-                No categories found
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Get started by creating your first service category.
-              </p>
-              <AddCategorySheet />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-muted/30 to-muted/10 rounded-lg border border-border/50 p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold">Categories Overview</h2>
+            <p className="text-sm sm:text-base mt-1 text-muted-foreground">
+              {categories.length > 0
+                ? `Showing ${categories.length} service categories`
+                : "No categories found"}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-lg border border-primary/20">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            <span className="text-sm font-medium text-primary">
+              {categories.length} Total
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Section */}
+      {categories.length > 0 ? (
+        <DataTable columns={columns} data={categories} />
+      ) : (
+        <div className="flex flex-col items-center justify-center py-16 text-center bg-muted/20 rounded-lg border border-border/50">
+          <div className="rounded-full bg-gradient-to-br from-primary/10 to-primary/5 p-4 mb-6 border border-primary/20">
+            <Plus className="h-8 w-8 text-primary" />
+          </div>
+          <h3 className="text-xl font-semibold mb-3 text-foreground">
+            No categories found
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-md">
+            Get started by creating your first service category to organize your services and jobs.
+          </p>
+          <AddCategorySheet />
+        </div>
+      )}
     </div>
   );
 }

@@ -22,6 +22,24 @@ export interface CreateServiceSubCategoryResponse {
   };
 }
 
+export interface UpdateServiceSubCategoryRequest {
+  name: string;
+  description: string;
+}
+
+export interface UpdateServiceSubCategoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    serviceSubCategory: ServiceSubCategory;
+  };
+}
+
+export interface DeleteServiceSubCategoryResponse {
+  success: boolean;
+  message: string;
+}
+
 export interface ServiceSubCategoryResponse {
   success: boolean;
   message: string;
