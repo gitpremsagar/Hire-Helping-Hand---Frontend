@@ -41,6 +41,7 @@ export const AddCategorySheet = () => {
       name: "",
       description: "",
       isNew: true,
+      orderNumber: 1,
     },
   });
 
@@ -95,6 +96,7 @@ export const AddCategorySheet = () => {
               <ul className="text-xs text-muted-foreground space-y-1">
                 <li>• Choose a clear, descriptive name for your category</li>
                 <li>• Add a helpful description for users</li>
+                <li>• Set an order number to control display sequence</li>
                 <li>• Mark as &quot;new&quot; to highlight it to users</li>
               </ul>
             </CardContent>
@@ -135,6 +137,26 @@ export const AddCategorySheet = () => {
                         placeholder="Describe what services this category includes..."
                         rows={4}
                         className="resize-none"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="orderNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Order Number</FormLabel>
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="number"
+                        placeholder="Enter order number (e.g., 1, 2, 3...)"
+                        className="h-11"
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
                       />
                     </FormControl>
                     <FormMessage />

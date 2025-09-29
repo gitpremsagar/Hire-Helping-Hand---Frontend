@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ActionsCell } from "./ActionsCell";
 import { SubCategoryActions } from "./SubCategoryActions";
 import { AddSubCategoryButton } from "./AddSubCategoryButton";
+import { useRouter } from "next/navigation";
 
 export const columns: ColumnDef<ServiceCategory>[] = [
   {
@@ -48,6 +49,7 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     cell: ({ row }) => {
       const category = row.original;
       const subcategories = category.ServiceSubCategory || [];
+      const router = useRouter();
       return (
         <div className="space-y-2">
           {subcategories.length > 0 ? (
@@ -58,7 +60,7 @@ export const columns: ColumnDef<ServiceCategory>[] = [
                     subCategory={sub}
                     onSuccess={() => {
                       // Refresh the page or refetch data
-                      window.location.reload();
+                      router.refresh();
                     }}
                   />
                   <Badge variant="outline" className="text-xs font-medium">
@@ -77,7 +79,7 @@ export const columns: ColumnDef<ServiceCategory>[] = [
             <AddSubCategoryButton
               category={category}
               onSuccess={() => {
-                window.location.reload();
+                router.refresh();
               }}
             />
           </div>

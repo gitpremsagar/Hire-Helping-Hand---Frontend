@@ -24,16 +24,20 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useDeleteServiceCategory } from "@/lib/modules/serviceCategory/useDeleteServiceCategory.hook";
 import { AddSubCategoryDialog } from "./AddSubCategoryDialog";
+import { EditCategoryDialog } from "./EditCategoryDialog";
+import  {useRouter} from "next/navigation";
 
 interface ActionsCellProps {
   category: ServiceCategory;
 }
 
 export function ActionsCell({ category }: ActionsCellProps) {
+  const router = useRouter();
   const { deleteServiceCategory, isDeleting } = useDeleteServiceCategory();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isSubCategoryDialogOpen, setIsSubCategoryDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent default dialog close behavior
@@ -72,7 +76,7 @@ export function ActionsCell({ category }: ActionsCellProps) {
             <Eye className="mr-2 h-4 w-4" />
             View details
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditDialogOpen(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Edit category
           </DropdownMenuItem>
@@ -126,7 +130,17 @@ export function ActionsCell({ category }: ActionsCellProps) {
         category={category}
         onSuccess={() => {
           // Refresh the page or refetch data
-          window.location.reload();
+          router.refresh();
+        }}
+      />
+
+      <EditCategoryDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        category={category}
+        onSuccess={() => {
+          // Refresh the page or refetch data
+          router.refresh();
         }}
       />
     </>

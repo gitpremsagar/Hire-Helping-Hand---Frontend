@@ -3,6 +3,7 @@ export interface ServiceCategory {
     name: string;
     description: string;
     isNew: boolean;
+    orderNumber: number;
     createdAt: string;
     updatedAt: string;
     _count?: {
