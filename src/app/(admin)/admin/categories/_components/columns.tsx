@@ -1,31 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ServiceCategory } from "@/lib/modules/serviceCategory/serviceCategory.type"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { MoreHorizontal, Edit, Trash2, Eye, Loader2 } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { useDeleteServiceCategory } from "@/lib/modules/serviceCategory/useDeleteServiceCategory.hook"
+import { ActionsCell } from "./ActionsCell"
 
 export const columns: ColumnDef<ServiceCategory>[] = [
   {
@@ -63,10 +41,10 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     cell: ({ row }) => {
       const subcategories = row.original.ServiceSubCategory || []
       return (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-col gap-1">
           {subcategories.length > 0 ? (
             subcategories.map((sub) => (
-              <Badge key={sub.id} variant="outline" className="text-xs">
+              <Badge key={sub.id} variant="outline" className="text-xs w-fit">
                 {sub.name}
               </Badge>
             ))
@@ -126,94 +104,8 @@ export const columns: ColumnDef<ServiceCategory>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const category = row.original
-      const { deleteServiceCategory, isDeleting, isDeleted, isPending } = useDeleteServiceCategory()
-      const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-
-      const handleDelete = async (e: React.MouseEvent) => {
-        e.preventDefault() // Prevent default dialog close behavior
-        try {
-          await deleteServiceCategory(category.id)
-          // Close the dialog after successful deletion
-          setIsDeleteDialogOpen(false)
-        } catch (error) {
-          console.error("Failed to delete category:", error)
-          // Keep dialog open on error so user can try again
-        }
-      }
-
-
-      const handleDeleteClick = () => {
-        setIsDeleteDialogOpen(true)
-      }
-
-      return (
-        <>
-          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(category.id)}
-              >
-                Copy category ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Eye className="mr-2 h-4 w-4" />
-                View details
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Edit className="mr-2 h-4 w-4" />
-                Edit category
-              </DropdownMenuItem>
-              <DropdownMenuItem 
-                className="text-red-600"
-                onClick={handleDeleteClick}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete category
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>
-                 {isDeleting ? "Deleting Category..." : "Are you sure?"}
-                </AlertDialogTitle>
-                <AlertDialogDescription>
-                  {isDeleting ? "Please wait while we delete the category" : "This action cannot be undone. This will permanently delete the category"}
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                  className="bg-red-600 hover:bg-red-700 disabled:opacity-50"
-                >
-                    {isDeleting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
-                    </>
-                  ) : (
-                    "Delete"
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </>
-      )
+      const category = row.original;
+      return <ActionsCell category={category} />;
     },
   },
 ]
