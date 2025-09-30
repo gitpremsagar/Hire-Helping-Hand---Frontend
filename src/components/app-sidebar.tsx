@@ -17,6 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import {
@@ -39,9 +40,12 @@ export async function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <SidebarContent className="text-lg font-semibold">
-          Services
-        </SidebarContent>
+        <div className="flex items-center justify-between">
+          <SidebarContent className="text-lg font-semibold">
+            Services
+          </SidebarContent>
+          <SidebarTrigger />
+        </div>
         <hr className="mt-2" />
       </SidebarHeader>
 
@@ -66,7 +70,9 @@ export async function AppSidebar() {
                         asChild
                         className="hover:bg-gray-200 transition-all duration-300"
                       >
-                        <Link href={`/freelancing-services/${category.slug}/${subCategory.slug}`}>
+                        <Link
+                          href={`/freelancing-services/${category.slug}/${subCategory.slug}`}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"

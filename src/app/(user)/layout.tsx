@@ -11,7 +11,6 @@ export default function UserLayout({
         <AppSidebar />
         <div className="w-full">
           <Navigation />
-          <SidebarTrigger />
           {children}
           <Footer />
         </div>
@@ -20,5 +19,5 @@ export default function UserLayout({
   );
 }
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
