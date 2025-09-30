@@ -66,7 +66,7 @@ export async function AppSidebar() {
                         asChild
                         className="hover:bg-gray-200 transition-all duration-300"
                       >
-                        <Link href={`/services/${subCategory.id}`}>
+                        <Link href={`/freelancing-services/${category.slug}/${subCategory.slug}`}>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"

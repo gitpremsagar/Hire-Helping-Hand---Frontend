@@ -4,6 +4,7 @@ export interface ServiceCategory {
     description: string;
     isNew: boolean;
     orderNumber: number;
+    slug: string;
     createdAt: string;
     updatedAt: string;
     _count?: {
@@ -20,6 +21,7 @@ export interface ServiceSubCategory {
     description: string;
     isNew: boolean;
     serviceCategoryId: string;
+    slug: string;
     createdAt: string;
     updatedAt: string;
 }
