@@ -10,12 +10,16 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { signUpSchema } from "@/lib/modules/auth/auth.schemas";
+import { authService } from "@/lib/modules/auth/auth.service";
+import { SignUpRequest } from "@/lib/modules/auth/auth.types";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(signUpSchema),
@@ -39,16 +43,31 @@ export default function SignUpPage() {
   }) => {
     setIsLoading(true);
     try {
-      // TODO: Implement actual sign-up API call
-      console.log("Sign-up data:", data);
+      // Prepare signup data (exclude confirmPassword as it's only for validation)
+      const signupData: SignUpRequest = {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        isFreelancer: data.isFreelancer,
+        isClient: data.isClient,
+      };
+
+      // Call the signup API
+      const response = await authService.signUp(signupData);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast.success("Account created successfully! Please check your email to verify your account.");
-      // TODO: Redirect to verification page or dashboard
-    } catch (error) {
-      toast.error("Sign-up failed. Please try again.");
+      if (response.success) {
+        toast.success("Account created successfully! Please check your email to verify your account.");
+        
+        // Redirect to login page after successful signup
+        setTimeout(() => {
+          router.push("/log-in");
+        }, 2000);
+      } else {
+        toast.error(response.message || "Sign-up failed. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      toast.error(error.message || "Sign-up failed. Please try again.");
     } finally {
       setIsLoading(false);
     }

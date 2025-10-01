@@ -17,5 +17,17 @@ export const API = {
     UPDATE: `${BASE_PATH}/service-subcategories/:id`,
     DELETE: `${BASE_PATH}/service-subcategories/:id`,
   },
+  AUTH: {
+    GET_REFRESHED_ACCESS_TOKEN: `${BASE_PATH}/auth/refresh-access-token`,
+    LOGIN: `${BASE_PATH}/auth/log-in`,
+    SIGNUP: `${BASE_PATH}/auth/sign-up`,
+    LOGOUT: `${BASE_PATH}/auth/log-out`,
+    FORGOT_PASSWORD: `${BASE_PATH}/auth/forgot-password`,
+    RESET_PASSWORD: `${BASE_PATH}/auth/reset-password`,
+    VERIFY_EMAIL: `${BASE_PATH}/auth/verify-email`,
+    VERIFY_PHONE: `${BASE_PATH}/auth/verify-phone`,
+    ADD_ROLE_TO_USER: `${BASE_PATH}/auth/add-role-to-user`,
+    REMOVE_ROLE_FROM_USER: `${BASE_PATH}/auth/remove-role-from-user`,
+  },
 }
 
