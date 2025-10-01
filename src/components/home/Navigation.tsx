@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import Link from "next/link";
 
 export default function Navigation() {
   return (
@@ -21,10 +22,14 @@ export default function Navigation() {
           </div>
           <div className="flex items-center space-x-4">
             <Button variant="ghost" className="hidden sm:inline-flex">
-              Sign In
+              <Link href="/log-in">
+                Log In
+              </Link>
             </Button>
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              Get Started
+              <Link href="/sign-up">
+                Sign Up
+              </Link>
             </Button>
           </div>
         </div>
