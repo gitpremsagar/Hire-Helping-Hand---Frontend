@@ -15,19 +15,32 @@ import {
 } from "../ui/dropdown-menu";
 import { User, LogOut, Settings, Briefcase, Search, Home, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useLogout } from "@/lib/modules/auth/useLogOut";
+import { useLogout } from "@/lib/modules/auth/useLogOut.hook";
+import { useAttemptLogIn } from "@/lib/modules/auth/useAttemptLogIn.hook";
+import { useEffect } from "react";
 
 export default function DynamicNavItem() {
   const auth = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
   const router = useRouter();
   const { logout, isLoading, error, clearError } = useLogout();
+  const { attemptLogIn, isLoading: isAttemptingLogIn, error: attemptLogInError } = useAttemptLogIn();
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      attemptLogIn();
+    }
+  }, [auth.isAuthenticated, attemptLogIn]);
+  
   const handleLogout = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     logout();  
     clearError();
     router.push("/");
   };
+
+  if (isAttemptingLogIn) {
+    return <Loader2 className="w-4 h-4 animate-spin" />;
+  }
 
   if (!auth.isAuthenticated) {
     return (
