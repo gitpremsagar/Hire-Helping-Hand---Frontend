@@ -1,4 +1,6 @@
 import { Footer, Navigation } from "@/components/home";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export default function UserLayout({
   children,
@@ -6,18 +8,13 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <SidebarProvider>
-        <AppSidebar />
-        <div className="w-full">
-          <Navigation />
-          {children}
-          <Footer />
-        </div>
-      </SidebarProvider>
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <Navigation />
+        {children}
+        <Footer />
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
-
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
