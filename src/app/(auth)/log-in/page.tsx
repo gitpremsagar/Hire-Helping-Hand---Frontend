@@ -28,11 +28,13 @@ import { LoginRequest } from "@/lib/modules/auth/auth.types";
 import { authService } from "@/lib/modules/auth/auth.service";
 import { setAuth } from "@/lib/modules/auth/auth.redux.slice";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -55,6 +57,8 @@ export default function LoginPage() {
         // Dispatch the login action
         dispatch(setAuth({ user: response.data.user, accessToken: response.data.accessToken, isAuthenticated: true }));
         // TODO: Redirect to dashboard or appropriate page
+        router.push("/"); 
+      
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
