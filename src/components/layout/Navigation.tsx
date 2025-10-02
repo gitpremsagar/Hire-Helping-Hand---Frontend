@@ -2,9 +2,10 @@
 "use client";
 
 import DynamicNavItem from "./DynamicNavItem";
-import { Briefcase, Users, Search, Star, Menu } from "lucide-react";
+import { Users, Search, Star, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import {
   Sheet,
   SheetContent,
@@ -19,68 +20,96 @@ import { useState, useEffect } from "react";
 export default function Navigation() {
   const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // TODO: Implement search functionality
+      console.log("Searching for:", searchQuery);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+  };
   
   return (
     <nav className="border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Mobile Sidebar Trigger */}
-          <div className="flex items-center space-x-2">
-            {/* Mobile Sidebar Trigger */}
+          {/* Mobile Sidebar Trigger */}
+          <div className="flex items-center">
             {mounted && isMobile && (
-              <SidebarTrigger className="mr-2 h-8 w-8 flex-shrink-0">
+              <SidebarTrigger className="h-8 w-8 flex-shrink-0">
                 <Menu className="h-4 w-4" />
               </SidebarTrigger>
             )}
-            
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white">
-                <Briefcase className="w-5 h-5 text-white" />
+          </div>
+
+          {/* Desktop Search Bar - Full Width */}
+          <div className="hidden md:flex flex-1 mx-8">
+            <form onSubmit={handleSearch} className="relative w-full flex">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search services, jobs, freelancers..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                  className="pl-10 pr-10 h-9 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-700 transition-colors rounded-r-none border-r-0"
+                />
+                {searchQuery && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSearch}
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-200 dark:hover:bg-gray-600"
+                  >
+                    <X className="h-3 w-3" />
+                  </Button>
+                )}
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Hire Helping Hand
-              </span>
-            </Link>
+              <Button
+                type="submit"
+                className="h-9 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-l-none border-l-0"
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/freelancing-services" 
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-            >
-              <Users className="w-4 h-4" />
-              <span>Find Services</span>
-            </Link>
-            <Link 
-              href="/jobs" 
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-            >
-              <Search className="w-4 h-4" />
-              <span>Find Jobs</span>
-            </Link>
-            <Link 
-              href="/freelancer" 
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-            >
-              <Star className="w-4 h-4" />
-              <span>Become a Freelancer</span>
-            </Link>
-          </div>
-
-          {/* Desktop Auth & Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            {/* Desktop Auth */}
-            <div className="hidden md:block">
-              <DynamicNavItem />
+          {/* Desktop Navigation & Auth */}
+          <div className="flex items-center space-x-8">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <Link 
+                href="/freelancing-services" 
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+              >
+                <Users className="w-4 h-4" />
+                <span>Find Services</span>
+              </Link>
+              
             </div>
 
-            {/* Mobile Menu */}
-            <Sheet>
+            {/* Desktop Auth & Mobile Menu */}
+            <div className="flex items-center space-x-4">
+              {/* Desktop Auth */}
+              <div className="hidden md:block">
+                <DynamicNavItem />
+              </div>
+
+              {/* Mobile Menu */}
+              <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
                   <Menu className="h-5 w-5" />
@@ -89,18 +118,48 @@ export default function Navigation() {
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col p-0">
                 <SheetHeader className="p-6 pb-4">
-                  <SheetTitle className="flex items-center space-x-2">
-                    <div className="w-8 h-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white">
-                      <Briefcase className="w-4 h-4 text-white" />
-                    </div>
-                    <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      Hire Helping Hand
-                    </span>
+                  <SheetTitle className="flex items-center">
+                    <span className="text-lg font-bold text-gray-900 dark:text-white">Menu</span>
                   </SheetTitle>
                 </SheetHeader>
                 
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto px-6">
+                  {/* Mobile Search Bar */}
+                  <div className="mb-6">
+                    <form onSubmit={handleSearch} className="relative flex">
+                      <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          type="text"
+                          placeholder="Search services, jobs, freelancers..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          onFocus={() => setIsSearchFocused(true)}
+                          onBlur={() => setIsSearchFocused(false)}
+                          className="pl-10 pr-10 h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-700 transition-colors rounded-r-none border-r-0"
+                        />
+                        {searchQuery && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearSearch}
+                            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-gray-600"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
+                      <Button
+                        type="submit"
+                        className="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-l-none border-l-0"
+                      >
+                        <Search className="h-4 w-4" />
+                      </Button>
+                    </form>
+                  </div>
+
                   {/* Mobile Navigation Links */}
                   <div className="flex flex-col space-y-2">
                     <Link 
@@ -135,6 +194,7 @@ export default function Navigation() {
                 </div>
               </SheetContent>
             </Sheet>
+            </div>
           </div>
         </div>
       </div>
