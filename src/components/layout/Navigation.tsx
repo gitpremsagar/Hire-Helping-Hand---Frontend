@@ -12,14 +12,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { SidebarTrigger } from "../ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
 
 export default function Navigation() {
+  const isMobile = useIsMobile();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
   return (
     <nav className="border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Logo and Mobile Sidebar Trigger */}
           <div className="flex items-center space-x-2">
+            {/* Mobile Sidebar Trigger */}
+            {mounted && isMobile && (
+              <SidebarTrigger className="mr-2 h-8 w-8 flex-shrink-0">
+                <Menu className="h-4 w-4" />
+              </SidebarTrigger>
+            )}
+            
             <Link href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white">
                 <Briefcase className="w-5 h-5 text-white" />

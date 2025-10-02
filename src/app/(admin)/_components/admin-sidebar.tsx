@@ -25,6 +25,7 @@ import {
   Globe,
   Activity,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -253,7 +254,14 @@ const sidebarSections: SidebarSection[] = [
   },
 ];
 
-export async function AdminSidebar() {
+export function AdminSidebar() {
+  const pathname = usePathname();
+
+  // Helper function to check if a menu item is active
+  const isMenuItemActive = (href: string) => {
+    return pathname === href;
+  };
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-border/40 pb-4">
@@ -285,12 +293,21 @@ export async function AdminSidebar() {
                   <SidebarMenu>
                     {section.items.map((item, itemIndex) => {
                       const ItemIcon = item.icon;
+                      const isActive = isMenuItemActive(item.href);
                       return (
                         <SidebarMenuItem key={itemIndex}>
-                          <SidebarMenuButton asChild className="gap-2">
-                            <Link href={item.href} className="flex items-center gap-2">
-                              <ItemIcon className="h-4 w-4" />
-                              {item.title}
+                          <SidebarMenuButton 
+                            asChild 
+                            isActive={isActive}
+                            className={`gap-2 ${
+                              isActive 
+                                ? "!bg-gradient-to-r !from-blue-600 !to-purple-600 !text-white hover:!from-blue-700 hover:!to-purple-700 !border-0 focus:!ring-0 focus:!ring-offset-0" 
+                                : ""
+                            }`}
+                          >
+                            <Link href={item.href} className={`flex items-center gap-2 focus:outline-none ${isActive ? "focus:ring-0 focus:ring-offset-0 text-white" : ""}`}>
+                              <ItemIcon className={`h-4 w-4 ${isActive ? "text-white" : ""}`} />
+                              <span className={isActive ? "text-white" : ""}>{item.title}</span>
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -309,10 +326,18 @@ export async function AdminSidebar() {
         <SidebarGroup>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild className="gap-2">
-                <Link href="/admin/settings" className="flex items-center gap-2">
-                  <Cog className="h-4 w-4" />
-                  Settings
+              <SidebarMenuButton 
+                asChild 
+                isActive={isMenuItemActive("/admin/settings")}
+                className={`gap-2 ${
+                  isMenuItemActive("/admin/settings") 
+                    ? "!bg-gradient-to-r !from-blue-600 !to-purple-600 !text-white hover:!from-blue-700 hover:!to-purple-700 !border-0 focus:!ring-0 focus:!ring-offset-0" 
+                    : ""
+                }`}
+              >
+                <Link href="/admin/settings" className={`flex items-center gap-2 focus:outline-none ${isMenuItemActive("/admin/settings") ? "focus:ring-0 focus:ring-offset-0 text-white" : ""}`}>
+                  <Cog className={`h-4 w-4 ${isMenuItemActive("/admin/settings") ? "text-white" : ""}`} />
+                  <span className={isMenuItemActive("/admin/settings") ? "text-white" : ""}>Settings</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
