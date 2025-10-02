@@ -18,7 +18,7 @@ export const useAttemptLogIn = () => {
       const response = await authService.getRefreshedAccessToken();
       dispatch(setAuth({ user: response.data.user, accessToken: response.data.accessToken, isAuthenticated: true }));
       toast.success("You are now logged in!");
-      router.push("/");
+      // router.push("/");
     } catch (error) {
       setError(error instanceof Error ? error.message : "An unknown error occurred");
       toast.error("Failed to log in. Please try again.");
