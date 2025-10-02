@@ -43,11 +43,11 @@ export default function SignUpPage() {
   }) => {
     setIsLoading(true);
     try {
-      // Prepare signup data (exclude confirmPassword as it's only for validation)
       const signupData: SignUpRequest = {
         name: data.name,
         email: data.email,
         password: data.password,
+        confirmPassword: data.confirmPassword,
         isFreelancer: data.isFreelancer,
         isClient: data.isClient,
       };

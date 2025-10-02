@@ -3,6 +3,7 @@ export type SignUpRequest = {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
   isFreelancer: boolean;
   isClient: boolean;
 };
@@ -63,8 +64,10 @@ export type SignUpResponse = {
 export type LoginResponse = {
   success: boolean;
   message: string;
-  user?: User;
-  token?: string;
+  data: {
+    user?: User;
+    accessToken?: string;
+  };
 };
 
 export type ForgotPasswordResponse = {
