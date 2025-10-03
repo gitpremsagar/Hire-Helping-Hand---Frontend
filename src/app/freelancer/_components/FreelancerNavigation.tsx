@@ -1,7 +1,7 @@
 "use client";
 
 import FreelancerDynamicNavItem from "./FreelancerDynamicNavItem";
-import { LayoutDashboard, Bell, Menu, X, Search } from "lucide-react";
+import { LayoutDashboard, Bell, Menu, X, Search, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -97,6 +97,14 @@ export default function FreelancerNavigation({ className }: { className?: string
                 <LayoutDashboard className="w-4 h-4" />
                 <span>Dashboard</span>
               </Link>
+
+              <Link 
+                href="/freelancer/create-new-service"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+              >
+                <Briefcase className="w-4 h-4" />
+                <span>Sell Your Service</span>
+              </Link>
               
               <Link 
                 href="/freelancer/notifications" 
@@ -174,6 +182,14 @@ export default function FreelancerNavigation({ className }: { className?: string
                     >
                       <LayoutDashboard className="w-5 h-5" />
                       <span className="text-lg">Dashboard</span>
+                    </Link>
+
+                    <Link 
+                      href="/freelancer/create-new-service"
+                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                    >
+                      <Briefcase className="w-5 h-5" />
+                      <span className="text-lg">Sell Your Service</span>
                     </Link>
                     
                     <Link 
