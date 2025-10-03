@@ -1,0 +1,693 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String  @unique
+  password String
+  address  String?
+  phone    String?
+  website  String?
+  bio      String?
+  avatar   String?
+
+  // Location
+  country   String?
+  state     String?
+  city      String?
+  zip       String?
+  latitude  Float?
+  longitude Float?
+
+  // Status
+  isFreelancer       Boolean  @default(false)
+  isClient           Boolean  @default(false)
+  isActive           Boolean  @default(true)
+  isEmailVerified    Boolean  @default(false)
+  isPhoneVerified    Boolean  @default(false)
+  isDeleted          Boolean  @default(false)
+  isArchived         Boolean  @default(false)
+  isSuspended        Boolean  @default(false)
+  isBlocked          Boolean  @default(false)
+  isMemberOfWaitlist Boolean? @default(false)
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  UserAndRoleRelation UserAndRoleRelation[]
+  UserSkillRelation   UserSkillRelation[]
+
+  // Back-relations for freelancer domain
+  freelancerProfile      FreelancerProfile?
+  portfolioItems         PortfolioItem[]
+  employments            Employment[]
+  educations             Education[]
+  certifications         Certification[]
+  freelancingServices    FreelancingService[]
+  proposals              Proposal[]
+  freelancerContracts    Contract[]               @relation("FreelancerContracts")
+  transactions           Transaction[]
+  withdrawals            Withdrawal[]
+  payoutMethods          PayoutMethod[]
+  jobs                   Job[]
+  blogPosts              BlogPost[]
+  UserToLanguageRelation UserToLanguageRelation[]
+  refreshTokens          RefreshToken[]
+  contracts              Contract[]               @relation("ClientContracts")
+}
+
+model UserLanguage {
+  id                     String                   @id @default(auto()) @map("_id") @db.ObjectId
+  language               String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  UserToLanguageRelation UserToLanguageRelation[]
+}
+
+enum LanguageLevel {
+  BEGINNER
+  INTERMEDIATE
+  FLUENT
+  NATIVE
+}
+
+model UserToLanguageRelation {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String        @db.ObjectId
+  languageId String        @db.ObjectId
+  level      LanguageLevel
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  user       User          @relation(fields: [userId], references: [id])
+  language   UserLanguage  @relation(fields: [languageId], references: [id])
+}
+
+model Skill {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  description          String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  serviceCategoryId    String   @db.ObjectId
+  serviceSubCategoryId String   @db.ObjectId
+
+  // Relations
+  UserSkillRelation                 UserSkillRelation[]
+  SkillToFreelancingServiceRelation SkillToFreelancingServiceRelation[]
+  SkillToJobRelation                SkillToJobRelation[]
+
+  // Back-relations
+  ServiceCategory    ServiceCategory    @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory @relation(fields: [serviceSubCategoryId], references: [id])
+}
+
+model SkillToFreelancingServiceRelation {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  skillId              String   @db.ObjectId
+  freelancingServiceId String   @db.ObjectId
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  Skill              Skill              @relation(fields: [skillId], references: [id])
+  FreelancingService FreelancingService @relation(fields: [freelancingServiceId], references: [id])
+}
+
+model SkillToJobRelation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  skillId   String   @db.ObjectId
+  jobId     String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Skill Skill @relation(fields: [skillId], references: [id])
+  Job   Job   @relation(fields: [jobId], references: [id])
+}
+
+model UserSkillRelation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  skillId   String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Skill     Skill    @relation(fields: [skillId], references: [id])
+}
+
+model UserRole {
+  id                  String                @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  description         String
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  UserAndRoleRelation UserAndRoleRelation[]
+}
+
+model UserAndRoleRelation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  roleId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Role      UserRole @relation(fields: [roleId], references: [id])
+}
+
+model FreelancerProfile {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId    String   @unique @db.ObjectId
+  title           String
+  overview        String
+  experienceLevel String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  freelancer User @relation(fields: [freelancerId], references: [id])
+}
+
+model PortfolioItem {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId String   @db.ObjectId
+  title        String
+  description  String
+  mediaUrls    String[]
+  projectUrl   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  //categorization
+  serviceCategoryId    String @db.ObjectId
+  serviceSubCategoryId String @db.ObjectId
+
+  freelancer         User               @relation(fields: [freelancerId], references: [id])
+  ServiceCategory    ServiceCategory    @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory @relation(fields: [serviceSubCategoryId], references: [id])
+}
+
+model Employment {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId String    @db.ObjectId
+  company      String
+  role         String
+  startDate    DateTime
+  endDate      DateTime?
+  description  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  //categorization
+  serviceCategoryId    String @db.ObjectId
+  serviceSubCategoryId String @db.ObjectId
+
+  freelancer         User               @relation(fields: [freelancerId], references: [id])
+  ServiceCategory    ServiceCategory    @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory @relation(fields: [serviceSubCategoryId], references: [id])
+}
+
+model Education {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId String    @db.ObjectId
+  school       String
+  degree       String?
+  field        String?
+  startDate    DateTime?
+  endDate      DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  //categorization
+  serviceCategoryId    String @db.ObjectId
+  serviceSubCategoryId String @db.ObjectId
+
+  freelancer         User               @relation(fields: [freelancerId], references: [id])
+  ServiceCategory    ServiceCategory    @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory @relation(fields: [serviceSubCategoryId], references: [id])
+}
+
+model Certification {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId  String    @db.ObjectId
+  name          String
+  issuer        String?
+  issuedAt      DateTime?
+  expiresAt     DateTime?
+  credentialId  String?
+  credentialUrl String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  //categorization
+  serviceCategoryId    String @db.ObjectId
+  serviceSubCategoryId String @db.ObjectId
+
+  freelancer         User               @relation(fields: [freelancerId], references: [id])
+  ServiceCategory    ServiceCategory    @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory @relation(fields: [serviceSubCategoryId], references: [id])
+}
+
+model FreelancingService {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId String @db.ObjectId
+  title        String
+  description  String
+  slug         String @unique // URL-friendly identifier
+
+  //categorization
+  serviceCategoryId    String @db.ObjectId
+  serviceSubCategoryId String @db.ObjectId
+
+  // Pricing & Packages
+  basePrice       Float?
+  currency        String  @default("USD")
+  isCustomPricing Boolean @default(false)
+
+  // Service Delivery
+  deliveryTime          Int // in days
+  revisionPolicy        Int     @default(0) // number of revisions
+  rushDeliveryAvailable Boolean @default(false)
+  rushDeliveryFee       Float?
+  deliveryGuarantee     String?
+
+  // Quality & Trust
+  isActive       Boolean  @default(true)
+  isTopRated     Boolean  @default(false)
+  isProSeller    Boolean  @default(false)
+  isFeatured     Boolean  @default(false)
+  badges         String[]
+  rating         Float?
+  ratingCount    Int      @default(0)
+  completionRate Float    @default(100.0)
+  responseTime   String? // e.g., "1 hour"
+  orderCount     Int      @default(0)
+
+  // Service Requirements
+  requirements          String?
+  faq                   Json?
+  communicationLanguage String[]
+  timezone              String?
+  availability          Json? // working hours/days
+
+  // Media & Portfolio
+  gallery           String[]
+  videoIntroduction String?
+  portfolioItems    String[] @db.ObjectId
+  beforeAfterImages String[]
+
+  // Features & Add-ons
+  features String[]
+  addOns   Json?
+  extras   Json?
+
+  // SEO & Discovery
+  tags            String[]
+  keywords        String[]
+  metaDescription String?
+
+  // Status & Moderation
+  status          ServiceStatus @default(DRAFT)
+  rejectionReason String?
+  moderationNotes String?
+  featuredUntil   DateTime?
+  boostedUntil    DateTime?
+
+  // Analytics
+  views             Int       @default(0)
+  favorites         Int       @default(0)
+  conversionRate    Float     @default(0.0)
+  lastOrderDate     DateTime?
+  averageOrderValue Float?
+
+  // Customization
+  isCustomizable  Boolean @default(false)
+  customFields    Json?
+  templateOptions Json?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  freelancer                        User                                @relation(fields: [freelancerId], references: [id])
+  packages                          FreelancingServicePackage[]
+  reviews                           FreelancingServiceReview[]
+  contracts                         Contract[]
+  ServiceCategory                   ServiceCategory                     @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory                ServiceSubCategory                  @relation(fields: [serviceSubCategoryId], references: [id])
+  SkillToFreelancingServiceRelation SkillToFreelancingServiceRelation[]
+}
+
+enum ServiceStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SUSPENDED
+  ARCHIVED
+}
+
+model FreelancingServicePackage {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  freelancingServiceId String   @db.ObjectId
+  tier                 String
+  name                 String
+  description          String
+  deliveryDays         Int
+  revisions            Int      @default(0)
+  price                Float
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  service FreelancingService @relation(fields: [freelancingServiceId], references: [id])
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Proposal {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  freelancerId String         @db.ObjectId
+  jobId        String         @db.ObjectId
+  contractId   String?        @db.ObjectId
+  coverLetter  String
+  bidAmount    Float
+  bidType      String
+  attachments  String[]
+  status       ProposalStatus @default(PENDING)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  freelancer User       @relation(fields: [freelancerId], references: [id])
+  Job        Job        @relation(fields: [jobId], references: [id])
+  Contract   Contract[]
+}
+
+enum ContractStatus {
+  ACTIVE
+  INACTIVE
+  COMPLETED
+}
+
+model Contract {
+  id                         String         @id @default(auto()) @map("_id") @db.ObjectId
+  clientId                   String         @db.ObjectId
+  freelancerId               String         @db.ObjectId
+  jobId                      String?        @unique @db.ObjectId // we will have jobId only if the contract is formed for a job and the freelancer's proposal is accepted
+  acceptedProposalId         String?        @db.ObjectId // we will have proposalId only if proposal of a freelancer is accepted
+  boughtFreelancingServiceId String?        @db.ObjectId // we will have serviceId only if the contract is formed because client bought a FreelancingService
+  type                       String
+  status                     ContractStatus @default(ACTIVE)
+  startDate                  DateTime       @default(now())
+  endDate                    DateTime?
+  totalFixedAmount           Float?
+  createdAt                  DateTime       @default(now())
+  updatedAt                  DateTime       @updatedAt
+
+  freelancer               User                @relation("FreelancerContracts", fields: [freelancerId], references: [id])
+  client                   User                @relation("ClientContracts", fields: [clientId], references: [id])
+  job                      Job?                @relation(fields: [jobId], references: [id])
+  boughtFreelancingService FreelancingService? @relation(fields: [boughtFreelancingServiceId], references: [id])
+  proposal                 Proposal?           @relation(fields: [acceptedProposalId], references: [id])
+}
+
+model FreelancingServiceReview {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  freelancingServiceId String   @db.ObjectId
+  clientId             String   @db.ObjectId
+  rating               Int
+  comment              String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  freelancingService FreelancingService @relation(fields: [freelancingServiceId], references: [id])
+}
+
+model Transaction {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId               String   @db.ObjectId
+  contractId           String?  @db.ObjectId
+  freelancingServiceId String?  @db.ObjectId
+  type                 String
+  amount               Float
+  currency             String   @default("USD")
+  direction            String
+  meta                 Json?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Withdrawal {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  amount    Float
+  currency  String   @default("USD")
+  status    String   @default("pending")
+  methodId  String?  @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User          @relation(fields: [userId], references: [id])
+  method PayoutMethod? @relation(fields: [methodId], references: [id])
+}
+
+model PayoutMethod {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  type      String
+  label     String?
+  details   Json
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id])
+  withdrawals Withdrawal[]
+}
+
+model Job {
+  // Current fields (keep these)
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  clientId             String   @db.ObjectId
+  title                String
+  attachments          String[]
+  deadline             DateTime
+  serviceCategoryId    String   @db.ObjectId
+  serviceSubCategoryId String   @db.ObjectId
+
+  // Additional essential fields
+  slug        String        @unique // URL-friendly identifier
+  description String // Detailed job description
+  complexity  JobComplexity @default(MEDIUM) // SIMPLE, MEDIUM, COMPLEX, EXPERT
+
+  // Enhanced budget fields
+  budget     Float? // For fixed-price jobs
+  budgetMin  Float? // For range-based pricing
+  budgetMax  Float? // For range-based pricing
+  budgetType BudgetType @default(FIXED) // FIXED, RANGE, NEGOTIABLE
+  currency   String     @default("USD")
+
+  // Enhanced timeline fields
+  startDate DateTime? // When work should begin
+  endDate   DateTime? // Alternative to deadline
+  duration  Int? // Expected duration in days
+  isUrgent  Boolean   @default(false)
+  timezone  String? // Client's timezone
+
+  // Job lifecycle management
+  status      JobStatus     @default(OPEN) // OPEN, IN_PROGRESS, COMPLETED, CANCELLED, PAUSED
+  visibility  JobVisibility @default(PUBLIC) // PUBLIC, PRIVATE, INVITE_ONLY
+  isActive    Boolean       @default(true)
+  isArchived  Boolean       @default(false)
+  isInTrash   Boolean       @default(false)
+  isDeleted   Boolean       @default(false)
+  isPaused    Boolean       @default(false)
+  pauseReason String?
+
+  // Client details and preferences
+  clientCompany     String? // Company name
+  clientLocation    String? // Client's location
+  clientTimezone    String? // Client's timezone
+  preferredLanguage String[] // Communication languages
+
+  // Enhanced skill requirements
+  requiredSkills  String[] // Required skill names
+  preferredSkills String[] // Nice-to-have skills
+  experienceLevel ExperienceLevel @default(INTERMEDIATE) // BEGINNER, INTERMEDIATE, EXPERT
+
+  // Legal and compliance fields // INDEPENDENT_CONTRACTOR, EMPLOYEE, PARTNERSHIP
+  ndaRequired Boolean @default(false) //is non disclosure agreement required
+  ipRights    String? // Intellectual property rights
+
+  // Platform-specific features
+  isFeatured    Boolean    @default(false)
+  boostLevel    BoostLevel @default(NONE) // NONE, STANDARD, PREMIUM, ULTRA
+  featuredUntil DateTime?
+  boostedUntil  DateTime?
+
+  // Analytics and tracking
+  viewsCount     Int   @default(0)
+  proposalsCount Int   @default(0)
+  favoritesCount Int   @default(0)
+  conversionRate Float @default(0.0)
+
+  // Search and discovery
+  tags            String[] // Searchable tags
+  keywords        String[] // SEO keywords
+  metaDescription String? // SEO meta description
+
+  //relations
+  client             User                 @relation(fields: [clientId], references: [id])
+  ServiceCategory    ServiceCategory      @relation(fields: [serviceCategoryId], references: [id])
+  ServiceSubCategory ServiceSubCategory   @relation(fields: [serviceSubCategoryId], references: [id])
+  Contract           Contract?
+  proposals          Proposal[]
+  SkillToJobRelation SkillToJobRelation[]
+}
+
+//=========================== Job enums ============================
+enum JobComplexity {
+  SIMPLE
+  MEDIUM
+  COMPLEX
+  EXPERT
+}
+
+enum BudgetType {
+  FIXED
+  RANGE
+  NEGOTIABLE
+}
+
+enum JobStatus {
+  DRAFT
+  OPEN
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  PAUSED
+  CLOSED
+}
+
+enum JobVisibility {
+  PUBLIC
+  PRIVATE
+  INVITE_ONLY
+  FEATURED
+}
+
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  EXPERT
+}
+
+enum BoostLevel {
+  NONE
+  STANDARD
+  PREMIUM
+  ULTRA
+}
+
+// =================================================================
+model BlogPost {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  authorId  String   @db.ObjectId
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author User @relation(fields: [authorId], references: [id])
+}
+
+model RefreshToken {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  refreshToken String   @unique
+  expiresAt    DateTime
+  isRevoked    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PhoneVerificationToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceCategory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  icon        String?  // Icon svg
+  orderNumber Int      @default(0) // Order number for the service category
+  slug        String   @unique 
+  isNew       Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ServiceSubCategory ServiceSubCategory[]
+  FreelancingService FreelancingService[]
+  Job                Job[]
+  Skill              Skill[]
+  PortfolioItem      PortfolioItem[]
+  Employment         Employment[]
+  Education          Education[]
+  Certification      Certification[]
+}
+
+model ServiceSubCategory {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  name              String
+  description       String
+  orderNumber       Int      @default(0) // Order number for the service sub category
+  slug              String   @unique 
+  icon              String?  // Icon svg
+  isNew             Boolean  @default(false)
+  serviceCategoryId String   @db.ObjectId
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  ServiceCategory    ServiceCategory      @relation(fields: [serviceCategoryId], references: [id])
+  FreelancingService FreelancingService[]
+  Job                Job[]
+  Skill              Skill[]
+  PortfolioItem      PortfolioItem[]
+  Employment         Employment[]
+  Education          Education[]
+  Certification      Certification[]
+}
