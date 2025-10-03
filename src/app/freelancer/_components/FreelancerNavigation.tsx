@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicNavItem from "@/components/layout/DynamicNavItem";
+import FreelancerDynamicNavItem from "./FreelancerDynamicNavItem";
 import { LayoutDashboard, Bell, Menu, X, Search } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -111,7 +111,7 @@ export default function FreelancerNavigation({ className }: { className?: string
             <div className="flex items-center space-x-4">
               {/* Desktop Auth */}
               <div className="hidden md:block">
-                <DynamicNavItem />
+                <FreelancerDynamicNavItem />
               </div>
 
               {/* Mobile Menu */}
@@ -187,7 +187,7 @@ export default function FreelancerNavigation({ className }: { className?: string
 
                   {/* Mobile Auth */}
                   <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <DynamicNavItem />
+                    <FreelancerDynamicNavItem />
                   </div>
                 </div>
               </SheetContent>
