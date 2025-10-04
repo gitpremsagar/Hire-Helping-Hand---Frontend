@@ -15,6 +15,7 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
+import DashboardTab from "./DashboardTab";
 
 export default function FreelancerNavigation({ className }: { className?: string }) {
   const isMobile = useIsMobile();
@@ -90,13 +91,14 @@ export default function FreelancerNavigation({ className }: { className?: string
           <div className="flex items-center space-x-8">
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link 
+              {/* <Link 
                 href="/freelancer/dashboard" 
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
               >
                 <LayoutDashboard className="w-4 h-4" />
                 <span>Dashboard</span>
-              </Link>
+              </Link> */}
+              <DashboardTab className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1" active={false} />
 
               <Link 
                 href="/freelancer/create-new-service"
