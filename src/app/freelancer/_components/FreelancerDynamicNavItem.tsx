@@ -70,27 +70,7 @@ export default function FreelancerDynamicNavItem() {
   // if user is authenticated
   return (
     <div className="flex items-center space-x-4">
-      {/* Navigation Links for Authenticated Users */}
-      <div className="hidden md:flex items-center space-x-6">
-        {auth.user?.isFreelancer && (
-          <Link
-            href="/freelancer/jobs"
-            className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-          >
-            <Briefcase className="w-4 h-4" />
-            <span>Find Jobs</span>
-          </Link>
-        )}
-
-        {auth.user?.isClient && (<Link
-          href="/jobs/post"
-          className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-        >
-          <Search className="w-4 h-4" />
-          <span>Post Job</span>
-        </Link>)}
-      </div>
-
+      
       {/* User Profile Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -133,14 +113,15 @@ export default function FreelancerDynamicNavItem() {
             </Link>
           </DropdownMenuItem>
 
-          
-            <DropdownMenuItem asChild>
-              <Link href="/freelancer/add-new-freelancing-service" className="flex items-center">
-                <Briefcase className="mr-2 h-4 w-4" />
-                <span>Sell Your Freelancing Service</span>
-              </Link>
-            </DropdownMenuItem>
-          
+          <DropdownMenuItem asChild>
+            <Link
+              href="/freelancer/add-new-freelancing-service"
+              className="flex items-center"
+            >
+              <Briefcase className="mr-2 h-4 w-4" />
+              <span>Sell Your Freelancing Service</span>
+            </Link>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
           <DropdownMenuItem
