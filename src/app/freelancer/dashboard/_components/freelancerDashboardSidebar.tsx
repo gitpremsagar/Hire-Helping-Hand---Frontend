@@ -67,7 +67,7 @@ interface SidebarSection {
 
 const sidebarSections: SidebarSection[] = [
   {
-    title: "Dashboard & Overview",
+    title: "Dashboard & Analytics",
     icon: BarChart3,
     iconColor: "text-blue-600",
     textColor: "text-blue-700",
@@ -95,10 +95,38 @@ const sidebarSections: SidebarSection[] = [
     ],
   },
   {
-    title: "Work & Projects",
+    title: "Services & Portfolio",
     icon: Briefcase,
     iconColor: "text-green-600",
     textColor: "text-green-700",
+    items: [
+      {
+        title: "My Services",
+        href: "/freelancer/services",
+        icon: FileText,
+      },
+      {
+        title: "Create Service",
+        href: "/freelancer/create-new-service",
+        icon: Plus,
+      },
+      {
+        title: "Portfolio Items",
+        href: "/freelancer/portfolio",
+        icon: FileText,
+      },
+      {
+        title: "Service Packages",
+        href: "/freelancer/packages",
+        icon: FileCheck,
+      },
+    ],
+  },
+  {
+    title: "Jobs & Proposals",
+    icon: Search,
+    iconColor: "text-purple-600",
+    textColor: "text-purple-700",
     items: [
       {
         title: "Find Jobs",
@@ -111,19 +139,14 @@ const sidebarSections: SidebarSection[] = [
         icon: Send,
       },
       {
-        title: "Active Projects",
-        href: "/freelancer/projects",
+        title: "Active Contracts",
+        href: "/freelancer/contracts",
         icon: FileCheck,
       },
       {
         title: "Completed Work",
         href: "/freelancer/completed",
         icon: CheckCircle,
-      },
-      {
-        title: "Portfolio",
-        href: "/freelancer/portfolio",
-        icon: FileText,
       },
     ],
   },
@@ -139,27 +162,27 @@ const sidebarSections: SidebarSection[] = [
         icon: DollarSign,
       },
       {
+        title: "Transactions",
+        href: "/freelancer/transactions",
+        icon: FileText,
+      },
+      {
         title: "Withdrawals",
         href: "/freelancer/withdrawals",
         icon: CreditCard,
       },
       {
-        title: "Transaction History",
-        href: "/freelancer/transactions",
-        icon: FileText,
-      },
-      {
-        title: "Tax Documents",
-        href: "/freelancer/tax",
-        icon: FileText,
+        title: "Payout Methods",
+        href: "/freelancer/payout-methods",
+        icon: CreditCard,
       },
     ],
   },
   {
     title: "Profile & Skills",
     icon: User,
-    iconColor: "text-purple-600",
-    textColor: "text-purple-700",
+    iconColor: "text-indigo-600",
+    textColor: "text-indigo-700",
     items: [
       {
         title: "Profile",
@@ -172,22 +195,32 @@ const sidebarSections: SidebarSection[] = [
         icon: Award,
       },
       {
+        title: "Employment History",
+        href: "/freelancer/employment",
+        icon: Briefcase,
+      },
+      {
+        title: "Education",
+        href: "/freelancer/education",
+        icon: FileText,
+      },
+      {
         title: "Certifications",
         href: "/freelancer/certifications",
         icon: Star,
       },
       {
-        title: "Availability",
-        href: "/freelancer/availability",
-        icon: Calendar,
+        title: "Languages",
+        href: "/freelancer/languages",
+        icon: Globe,
       },
     ],
   },
   {
     title: "Communication",
     icon: MessageSquare,
-    iconColor: "text-indigo-600",
-    textColor: "text-indigo-700",
+    iconColor: "text-teal-600",
+    textColor: "text-teal-700",
     items: [
       {
         title: "Messages",
@@ -228,9 +261,9 @@ const sidebarSections: SidebarSection[] = [
         icon: FileText,
       },
       {
-        title: "Contracts",
-        href: "/freelancer/contracts",
-        icon: FileCheck,
+        title: "Blog Posts",
+        href: "/freelancer/blog",
+        icon: FileText,
       },
       {
         title: "Resources",
