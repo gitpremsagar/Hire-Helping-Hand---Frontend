@@ -1,7 +1,15 @@
 "use client";
 
 import FreelancerDynamicNavItem from "./FreelancerDynamicNavItem";
-import { LayoutDashboard, Bell, Menu, X, Search, Briefcase } from "lucide-react";
+import {
+  LayoutDashboard,
+  Bell,
+  Menu,
+  X,
+  Search,
+  Briefcase,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +25,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import DashboardTab from "./DashboardTab";
 
-export default function FreelancerNavigation({ className }: { className?: string }) {
+export default function FreelancerNavigation({
+  className,
+}: {
+  className?: string;
+}) {
   const isMobile = useIsMobile();
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,9 +50,11 @@ export default function FreelancerNavigation({ className }: { className?: string
   const clearSearch = () => {
     setSearchQuery("");
   };
-  
+
   return (
-    <nav className={`border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50 ${className}`}>
+    <nav
+      className={`border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50 ${className}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Mobile Sidebar Trigger */}
@@ -91,19 +105,28 @@ export default function FreelancerNavigation({ className }: { className?: string
           <div className="flex items-center space-x-8">
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              
-              <DashboardTab className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1" active={false} />
+              <Link
+                href="/"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+              >
+                <Users className="w-4 h-4" />
+                <span>Switch to Client Mode</span>
+              </Link>
+              <DashboardTab
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+                active={false}
+              />
 
-              <Link 
+              <Link
                 href="/freelancer/create-new-service"
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
               >
                 <Briefcase className="w-4 h-4" />
                 <span>Sell Your Service</span>
               </Link>
-              
-              <Link 
-                href="/freelancer/notifications" 
+
+              <Link
+                href="/freelancer/notifications"
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
               >
                 <Bell className="w-4 h-4" />
@@ -120,90 +143,95 @@ export default function FreelancerNavigation({ className }: { className?: string
 
               {/* Mobile Menu */}
               <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col p-0">
-                <SheetHeader className="p-6 pb-4">
-                  <SheetTitle className="flex items-center">
-                    <span className="text-lg font-bold text-gray-900 dark:text-white">Freelancer Menu</span>
-                  </SheetTitle>
-                </SheetHeader>
-                
-                {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto px-6">
-                  {/* Mobile Search Bar */}
-                  <div className="mb-6">
-                    <form onSubmit={handleSearch} className="relative flex">
-                      <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                        <Input
-                          type="text"
-                          placeholder="Search jobs, projects, clients..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          onFocus={() => setIsSearchFocused(true)}
-                          onBlur={() => setIsSearchFocused(false)}
-                          className="pl-10 pr-10 h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-700 transition-colors rounded-r-none border-r-0"
-                        />
-                        {searchQuery && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={clearSearch}
-                            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-gray-600"
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
-                      <Button
-                        type="submit"
-                        className="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-l-none border-l-0"
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Toggle menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="right"
+                  className="w-[300px] sm:w-[400px] flex flex-col p-0"
+                >
+                  <SheetHeader className="p-6 pb-4">
+                    <SheetTitle className="flex items-center">
+                      <span className="text-lg font-bold text-gray-900 dark:text-white">
+                        Freelancer Menu
+                      </span>
+                    </SheetTitle>
+                  </SheetHeader>
+
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto px-6">
+                    {/* Mobile Search Bar */}
+                    <div className="mb-6">
+                      <form onSubmit={handleSearch} className="relative flex">
+                        <div className="relative flex-1">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            type="text"
+                            placeholder="Search jobs, projects, clients..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => setIsSearchFocused(true)}
+                            onBlur={() => setIsSearchFocused(false)}
+                            className="pl-10 pr-10 h-10 bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:bg-white dark:focus:bg-gray-700 transition-colors rounded-r-none border-r-0"
+                          />
+                          {searchQuery && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={clearSearch}
+                              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-gray-600"
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
+                        <Button
+                          type="submit"
+                          className="h-10 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-l-none border-l-0"
+                        >
+                          <Search className="h-4 w-4" />
+                        </Button>
+                      </form>
+                    </div>
+
+                    {/* Mobile Navigation Links */}
+                    <div className="flex flex-col space-y-2">
+                      <Link
+                        href="/freelancer/dashboard"
+                        className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
-                        <Search className="h-4 w-4" />
-                      </Button>
-                    </form>
-                  </div>
+                        <LayoutDashboard className="w-5 h-5" />
+                        <span className="text-lg">Dashboard</span>
+                      </Link>
 
-                  {/* Mobile Navigation Links */}
-                  <div className="flex flex-col space-y-2">
-                    <Link 
-                      href="/freelancer/dashboard" 
-                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
-                      <LayoutDashboard className="w-5 h-5" />
-                      <span className="text-lg">Dashboard</span>
-                    </Link>
+                      <Link
+                        href="/freelancer/create-new-service"
+                        className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      >
+                        <Briefcase className="w-5 h-5" />
+                        <span className="text-lg">Sell Your Service</span>
+                      </Link>
 
-                    <Link 
-                      href="/freelancer/create-new-service"
-                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
-                      <Briefcase className="w-5 h-5" />
-                      <span className="text-lg">Sell Your Service</span>
-                    </Link>
-                    
-                    <Link 
-                      href="/freelancer/notifications" 
-                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
-                      <Bell className="w-5 h-5" />
-                      <span className="text-lg">Notifications</span>
-                    </Link>
-                  </div>
+                      <Link
+                        href="/freelancer/notifications"
+                        className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      >
+                        <Bell className="w-5 h-5" />
+                        <span className="text-lg">Notifications</span>
+                      </Link>
+                    </div>
 
-                  {/* Mobile Auth */}
-                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <FreelancerDynamicNavItem />
+                    {/* Mobile Auth */}
+                    <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                      <FreelancerDynamicNavItem />
+                    </div>
                   </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>

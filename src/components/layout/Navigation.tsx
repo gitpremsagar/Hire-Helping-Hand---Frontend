@@ -92,6 +92,13 @@ export default function Navigation() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <Link 
+                href="/freelancer"
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+              >
+                <Users className="w-4 h-4" />
+                <span>Switch to Freelancer Mode</span>
+              </Link>
+              <Link 
                 href="/freelancing-services" 
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
               >

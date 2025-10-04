@@ -161,7 +161,7 @@ export function AppSidebar({ className }: AppSidebarProps) {
       <Sidebar
         collapsible="icon"
         className={`${className} ${isMobile ? "w-full" : ""}`}
-        variant="sidebar"
+        variant="floating"
       >
         <SidebarHeader className="border-b">
           <div className="flex items-center justify-between px-2 py-2">
