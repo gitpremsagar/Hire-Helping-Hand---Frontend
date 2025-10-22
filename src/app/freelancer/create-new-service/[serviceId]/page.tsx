@@ -14,10 +14,14 @@ import {
   ServiceRequirements,
   ServicePreview
 } from "./_components";
+import { toast } from "sonner";
+import { FreelancingServiceService } from "@/lib/modules/freelancingService/freelancingService.service";
+import { CreateFreelancingServiceRequest } from "@/lib/modules/freelancingService/freelancingService.types";
 
 export default function CreateNewServicePage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [serviceData, setServiceData] = useState({
+    id: "",
     // Basic Info
     title: "",
     description: "",
@@ -73,15 +77,41 @@ export default function CreateNewServicePage() {
     }
   };
 
-  const handleSaveDraft = () => {
+  const handleSaveDraft = async () => {
     // TODO: Implement save as draft functionality
     console.log("Saving as draft:", serviceData);
+    if (serviceData.title === "") {
+      toast.error("Service title connot be empty for saving as draft");
+      return;
+    }
+
+    try {
+      const response = await FreelancingServiceService.saveAsDraft(serviceData as CreateFreelancingServiceRequest);
+      if (response.success) {
+        toast.success("Service saved as draft");
+      }
+    } catch (error) {
+      toast.error("Failed to save as draft");
+    }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     // TODO: Implement publish functionality
     console.log("Publishing service:", serviceData);
-  };
+    if (serviceData.title === "") {
+      toast.error("Service title connot be empty for publishing");
+      return;
+    }
+
+    try {
+      const response = await FreelancingServiceService.publishService(serviceData.id as string);
+      if (response.success) {
+        toast.success("Service published");
+      }
+    } catch (error) {
+      toast.error("Failed to publish");
+    }
+  }
 
   const handleDataUpdate = (updates: Partial<typeof serviceData>) => {
     setServiceData({ ...serviceData, ...updates });

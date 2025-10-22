@@ -1,4 +1,4 @@
-import { customAxiosRequest } from "@/lib/custom-axios-requests";
+import customAxios from "@/lib/custom-axios-requests";
 import {
   FreelancingService,
   CreateFreelancingServiceRequest,
@@ -16,7 +16,7 @@ export class FreelancingServiceService {
   // Create a new freelancing service
   static async createService(data: CreateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxiosRequest.post(`${this.baseUrl}`, data);
+      const response = await customAxios.post(`${this.baseUrl}`, data);
       return {
         success: true,
         data: response.data,
@@ -35,7 +35,7 @@ export class FreelancingServiceService {
   // Get a single freelancing service by ID
   static async getServiceById(id: string): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxiosRequest.get(`${this.baseUrl}/${id}`);
+      const response = await customAxios.get(`${this.baseUrl}/${id}`);
       return {
         success: true,
         data: response.data,
@@ -64,7 +64,7 @@ export class FreelancingServiceService {
     sortOrder?: "asc" | "desc";
   } = {}): Promise<FreelancingServiceListResponse> {
     try {
-      const response = await customAxiosRequest.get(`${this.baseUrl}`, { params });
+      const response = await customAxios.get(`${this.baseUrl}`, { params });
       return {
         success: true,
         data: response.data.services,
@@ -85,7 +85,7 @@ export class FreelancingServiceService {
   static async updateService(data: UpdateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
       const { id, ...updateData } = data;
-      const response = await customAxiosRequest.put(`${this.baseUrl}/${id}`, updateData);
+      const response = await customAxios.put(`${this.baseUrl}/${id}`, updateData);
       return {
         success: true,
         data: response.data,
@@ -104,7 +104,7 @@ export class FreelancingServiceService {
   // Delete a freelancing service
   static async deleteService(id: string): Promise<FreelancingServiceResponse> {
     try {
-      await customAxiosRequest.delete(`${this.baseUrl}/${id}`);
+      await customAxios.delete(`${this.baseUrl}/${id}`);
       return {
         success: true,
         message: "Service deleted successfully"
@@ -122,7 +122,7 @@ export class FreelancingServiceService {
   // Publish a service (change status from DRAFT to PENDING_APPROVAL)
   static async publishService(id: string): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxiosRequest.patch(`${this.baseUrl}/${id}/publish`);
+      const response = await customAxios.patch(`${this.baseUrl}/${id}/publish`);
       return {
         success: true,
         data: response.data,
@@ -142,7 +142,7 @@ export class FreelancingServiceService {
   static async saveAsDraft(data: CreateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
       const draftData = { ...data, status: ServiceStatus.DRAFT };
-      const response = await customAxiosRequest.post(`${this.baseUrl}`, draftData);
+      const response = await customAxios.post(`${this.baseUrl}`, draftData);
       return {
         success: true,
         data: response.data,
@@ -166,7 +166,7 @@ export class FreelancingServiceService {
     isActive?: boolean;
   } = {}): Promise<FreelancingServiceListResponse> {
     try {
-      const response = await customAxiosRequest.get(`${this.baseUrl}/freelancer/${freelancerId}`, { params });
+      const response = await customAxios.get(`${this.baseUrl}/freelancer/${freelancerId}`, { params });
       return {
         success: true,
         data: response.data.services,
@@ -186,7 +186,7 @@ export class FreelancingServiceService {
   // Update service status
   static async updateServiceStatus(id: string, status: ServiceStatus): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxiosRequest.patch(`${this.baseUrl}/${id}/status`, { status });
+      const response = await customAxios.patch(`${this.baseUrl}/${id}/status`, { status });
       return {
         success: true,
         data: response.data,
