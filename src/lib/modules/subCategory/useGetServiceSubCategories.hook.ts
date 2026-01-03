@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getServiceSubCategories } from "./subCategory.service";
+import { ServiceSubCategory } from "./subCategory.type";
 
 export const useGetServiceSubCategories = (categoryId?: string) => {
   return useQuery({
@@ -11,7 +12,7 @@ export const useGetServiceSubCategories = (categoryId?: string) => {
         const response = await getServiceSubCategories();
         // Filter by categoryId if provided
         if (categoryId) {
-          return response.data?.serviceSubCategories?.filter((subCategory: any) => subCategory.serviceCategoryId === categoryId) || [];
+          return response.data?.serviceSubCategories?.filter((subCategory: ServiceSubCategory) => subCategory.serviceCategoryId === categoryId) || [];
         }
         return response.data?.serviceSubCategories || [];
       } catch (error) {

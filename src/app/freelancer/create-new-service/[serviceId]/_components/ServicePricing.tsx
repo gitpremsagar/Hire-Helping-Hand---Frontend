@@ -10,14 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, DollarSign } from "lucide-react";
 
+interface ServicePricingData {
+  basePrice: number;
+  currency: string;
+  isCustomPricing: boolean;
+  [key: string]: unknown; // Allow additional properties
+}
+
 interface ServicePricingProps {
-  data: {
-    basePrice: number;
-    currency: string;
-    isCustomPricing: boolean;
-    [key: string]: any; // Allow additional properties
-  };
-  onUpdate: (updates: any) => void;
+  data: ServicePricingData;
+  onUpdate: (updates: Partial<ServicePricingData>) => void;
 }
 
 interface PricingPackage {

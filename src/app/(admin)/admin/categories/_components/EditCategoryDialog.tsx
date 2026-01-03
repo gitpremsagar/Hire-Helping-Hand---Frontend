@@ -84,7 +84,7 @@ export function EditCategoryDialog({
         <DialogHeader>
           <DialogTitle>Edit Category</DialogTitle>
           <DialogDescription>
-            Update the category information below. Click save when you're done.
+            Update the category information below. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">

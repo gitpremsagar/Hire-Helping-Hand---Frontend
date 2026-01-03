@@ -165,7 +165,7 @@ export function FreelancerPerformanceMetrics({ freelancerId }: FreelancerPerform
 
           {/* Monthly Performance */}
           <div>
-            <h4 className="font-semibold mb-4">This Month's Performance</h4>
+            <h4 className="font-semibold mb-4">This Month&apos;s Performance</h4>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="p-4 border rounded-lg">
                 <div className="flex items-center gap-2 mb-2">

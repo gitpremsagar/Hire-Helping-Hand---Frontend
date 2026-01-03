@@ -10,14 +10,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus, Globe, Clock, MessageSquare } from "lucide-react";
 
+interface ServiceRequirementsData {
+  requirements: string;
+  communicationLanguage: string[];
+  timezone: string;
+  [key: string]: unknown; // Allow additional properties
+}
+
 interface ServiceRequirementsProps {
-  data: {
-    requirements: string;
-    communicationLanguage: string[];
-    timezone: string;
-    [key: string]: any; // Allow additional properties
-  };
-  onUpdate: (updates: any) => void;
+  data: ServiceRequirementsData;
+  onUpdate: (updates: Partial<ServiceRequirementsData>) => void;
 }
 
 export default function ServiceRequirements({ data, onUpdate }: ServiceRequirementsProps) {

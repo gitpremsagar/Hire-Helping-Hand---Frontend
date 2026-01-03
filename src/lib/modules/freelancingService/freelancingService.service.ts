@@ -1,6 +1,5 @@
 import customAxios from "@/lib/custom-axios-requests";
 import {
-  FreelancingService,
   CreateFreelancingServiceRequest,
   UpdateFreelancingServiceRequest,
   FreelancingServiceResponse,
@@ -8,6 +7,14 @@ import {
   ServiceStatus
 } from "./freelancingService.types";
 import { API } from "@/lib/constants";
+import { AxiosError } from "axios";
+
+interface AxiosErrorResponse {
+  message?: string;
+  data?: {
+    message?: string;
+  };
+}
 
 export class FreelancingServiceService {
   private static baseUrl = API.FREELANCING_SERVICES;
@@ -21,11 +28,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service created successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error creating freelancing service:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to create service",
+        error: axiosError.response?.data?.message || "Failed to create service",
         message: "Failed to create service"
       };
     }
@@ -40,11 +48,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service retrieved successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching freelancing service:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to fetch service",
+        error: axiosError.response?.data?.message || "Failed to fetch service",
         message: "Failed to fetch service"
       };
     }
@@ -70,11 +79,12 @@ export class FreelancingServiceService {
         pagination: response.data.data?.pagination,
         message: response.data.message || "Services retrieved successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching freelancing services:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to fetch services",
+        error: axiosError.response?.data?.message || "Failed to fetch services",
         message: "Failed to fetch services"
       };
     }
@@ -90,11 +100,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service updated successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error updating freelancing service:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to update service",
+        error: axiosError.response?.data?.message || "Failed to update service",
         message: "Failed to update service"
       };
     }
@@ -108,11 +119,12 @@ export class FreelancingServiceService {
         success: true,
         message: "Service deleted successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error deleting freelancing service:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to delete service",
+        error: axiosError.response?.data?.message || "Failed to delete service",
         message: "Failed to delete service"
       };
     }
@@ -127,11 +139,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service published successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error publishing freelancing service:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to publish service",
+        error: axiosError.response?.data?.message || "Failed to publish service",
         message: "Failed to publish service"
       };
     }
@@ -147,11 +160,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service saved as draft"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error saving service as draft:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to save draft",
+        error: axiosError.response?.data?.message || "Failed to save draft",
         message: "Failed to save draft"
       };
     }
@@ -172,11 +186,12 @@ export class FreelancingServiceService {
         pagination: response.data.data?.pagination,
         message: response.data.message || "Freelancer services retrieved successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching freelancer services:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to fetch freelancer services",
+        error: axiosError.response?.data?.message || "Failed to fetch freelancer services",
         message: "Failed to fetch freelancer services"
       };
     }
@@ -191,11 +206,12 @@ export class FreelancingServiceService {
         data: response.data.data, // Extract the actual service data from the backend response
         message: response.data.message || "Service status updated successfully"
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error updating service status:", error);
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
       return {
         success: false,
-        error: error.response?.data?.message || "Failed to update service status",
+        error: axiosError.response?.data?.message || "Failed to update service status",
         message: "Failed to update service status"
       };
     }

@@ -9,14 +9,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { X, Upload, Image, Video, Plus, Trash2 } from "lucide-react";
 
+interface ServiceMediaData {
+  gallery: string[];
+  videoIntroduction: string;
+  portfolioItems: string[];
+  [key: string]: unknown; // Allow additional properties
+}
+
 interface ServiceMediaProps {
-  data: {
-    gallery: string[];
-    videoIntroduction: string;
-    portfolioItems: string[];
-    [key: string]: any; // Allow additional properties
-  };
-  onUpdate: (updates: any) => void;
+  data: ServiceMediaData;
+  onUpdate: (updates: Partial<ServiceMediaData>) => void;
 }
 
 export default function ServiceMedia({ data, onUpdate }: ServiceMediaProps) {

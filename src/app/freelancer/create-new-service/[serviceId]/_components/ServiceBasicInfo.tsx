@@ -11,17 +11,20 @@ import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";
 import { useGetServiceCategories } from "@/lib/modules/serviceCategory/useGetServiceCategories.hook";
 import { useGetServiceSubCategories } from "@/lib/modules/subCategory/useGetServiceSubCategories.hook";
+import { ServiceCategory } from "@/lib/modules/serviceCategory/serviceCategory.type";
+
+interface ServiceBasicInfoData {
+  title: string;
+  description: string;
+  serviceCategoryId: string;
+  serviceSubCategoryId: string;
+  tags: string[];
+  [key: string]: unknown; // Allow additional properties
+}
 
 interface ServiceBasicInfoProps {
-  data: {
-    title: string;
-    description: string;
-    serviceCategoryId: string;
-    serviceSubCategoryId: string;
-    tags: string[];
-    [key: string]: any; // Allow additional properties
-  };
-  onUpdate: (updates: any) => void;
+  data: ServiceBasicInfoData;
+  onUpdate: (updates: Partial<ServiceBasicInfoData>) => void;
 }
 
 export default function ServiceBasicInfo({ data, onUpdate }: ServiceBasicInfoProps) {
@@ -109,7 +112,7 @@ export default function ServiceBasicInfo({ data, onUpdate }: ServiceBasicInfoPro
               {categoriesLoading ? (
                 <SelectItem value="loading" disabled>Loading categories...</SelectItem>
               ) : (
-                categories?.map((category: any) => (
+                categories?.map((category: ServiceCategory) => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.name}
                   </SelectItem>
@@ -136,7 +139,7 @@ export default function ServiceBasicInfo({ data, onUpdate }: ServiceBasicInfoPro
               {subCategoriesLoading ? (
                 <SelectItem value="loading" disabled>Loading subcategories...</SelectItem>
               ) : subCategories && subCategories.length > 0 ? (
-                subCategories.map((subCategory: any) => (
+                subCategories.map((subCategory) => (
                   <SelectItem key={subCategory.id} value={subCategory.id}>
                     {subCategory.name}
                   </SelectItem>

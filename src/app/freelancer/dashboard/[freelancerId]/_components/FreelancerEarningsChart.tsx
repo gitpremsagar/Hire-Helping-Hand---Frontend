@@ -128,7 +128,7 @@ export function FreelancerEarningsChart({ freelancerId }: FreelancerEarningsChar
 
         {/* Weekly Breakdown */}
         <div className="mt-6 pt-4 border-t">
-          <h4 className="font-semibold mb-4">This Month's Weekly Breakdown</h4>
+          <h4 className="font-semibold mb-4">This Month&apos;s Weekly Breakdown</h4>
           <div className="grid gap-3 md:grid-cols-2">
             {mockEarningsData.weekly.map((week, index) => (
               <div key={index} className="p-3 border rounded-lg">

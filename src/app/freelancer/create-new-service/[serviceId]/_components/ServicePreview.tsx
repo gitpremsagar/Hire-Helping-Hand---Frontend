@@ -16,29 +16,31 @@ import {
   AlertCircle
 } from "lucide-react";
 
+interface ServicePreviewData {
+  title: string;
+  description: string;
+  serviceCategoryId: string;
+  serviceSubCategoryId: string;
+  basePrice: number;
+  currency: string;
+  isCustomPricing: boolean;
+  deliveryTime: number;
+  revisionPolicy: number;
+  rushDeliveryAvailable: boolean;
+  rushDeliveryFee: number;
+  deliveryGuarantee: string;
+  gallery: string[];
+  videoIntroduction: string;
+  portfolioItems: string[];
+  requirements: string;
+  communicationLanguage: string[];
+  timezone: string;
+  tags: string[];
+  [key: string]: unknown; // Allow additional properties
+}
+
 interface ServicePreviewProps {
-  data: {
-    title: string;
-    description: string;
-    serviceCategoryId: string;
-    serviceSubCategoryId: string;
-    basePrice: number;
-    currency: string;
-    isCustomPricing: boolean;
-    deliveryTime: number;
-    revisionPolicy: number;
-    rushDeliveryAvailable: boolean;
-    rushDeliveryFee: number;
-    deliveryGuarantee: string;
-    gallery: string[];
-    videoIntroduction: string;
-    portfolioItems: string[];
-    requirements: string;
-    communicationLanguage: string[];
-    timezone: string;
-    tags: string[];
-    [key: string]: any; // Allow additional properties
-  };
+  data: ServicePreviewData;
   onPublish: () => void;
 }
 
@@ -185,7 +187,7 @@ export default function ServicePreview({ data, onPublish }: ServicePreviewProps)
             <div className="space-y-4">
               <div>
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
-                  What's Included
+                  What&apos;s Included
                 </h4>
                 <ul className="space-y-1 text-sm text-gray-600 dark:text-gray-400">
                   <li className="flex items-center gap-2">

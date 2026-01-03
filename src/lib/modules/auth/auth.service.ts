@@ -32,6 +32,14 @@ import {
   DeleteUserRoleResponse,
   GetRefreshedAccessTokenResponse,
 } from "./auth.types";
+import { AxiosError } from "axios";
+
+interface AxiosErrorResponse {
+  message?: string;
+  data?: {
+    message?: string;
+  };
+}
 
 // Auth service functions
 export const authService = {
@@ -39,9 +47,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.GET_REFRESHED_ACCESS_TOKEN);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Get refreshed access token error:", error);
-      throw new Error(error.response?.data?.message || "Get refreshed access token failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Get refreshed access token failed. Please try again.");
     }
   },
 
@@ -49,9 +58,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.SIGNUP, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Sign up error:", error);
-      throw new Error(error.response?.data?.message || "Sign up failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Sign up failed. Please try again.");
     }
   },
 
@@ -59,9 +69,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.LOGIN, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Login error:", error);
-      throw new Error(error.response?.data?.message || "Login failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Login failed. Please try again.");
     }
   },
 
@@ -69,9 +80,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.LOGOUT);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Logout error:", error);
-      throw new Error(error.response?.data?.message || "Logout failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Logout failed. Please try again.");
     }
   },
 
@@ -79,9 +91,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.FORGOT_PASSWORD, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Forgot password error:", error);
-      throw new Error(error.response?.data?.message || "Failed to send reset email. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Failed to send reset email. Please try again.");
     }
   },
 
@@ -89,9 +102,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.RESET_PASSWORD, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Reset password error:", error);
-      throw new Error(error.response?.data?.message || "Failed to reset password. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Failed to reset password. Please try again.");
     }
   },
 
@@ -99,9 +113,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.VERIFY_EMAIL, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Verify email error:", error);
-      throw new Error(error.response?.data?.message || "Email verification failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Email verification failed. Please try again.");
     }
   },
 
@@ -109,9 +124,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.VERIFY_PHONE, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Verify phone error:", error);
-      throw new Error(error.response?.data?.message || "Phone verification failed. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Phone verification failed. Please try again.");
     }
   },
 
@@ -119,9 +135,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.ADD_ROLE_TO_USER, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Add role to user error:", error);
-      throw new Error(error.response?.data?.message || "Failed to add role to user. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Failed to add role to user. Please try again.");
     }
   },
 
@@ -129,9 +146,10 @@ export const authService = {
     try {
       const response = await customAxios.post(API.AUTH.REMOVE_ROLE_FROM_USER, data);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Remove role from user error:", error);
-      throw new Error(error.response?.data?.message || "Failed to remove role from user. Please try again.");
+      const axiosError = error as AxiosError<AxiosErrorResponse>;
+      throw new Error(axiosError.response?.data?.message || "Failed to remove role from user. Please try again.");
     }
   },
 };

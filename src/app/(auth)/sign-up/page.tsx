@@ -65,9 +65,10 @@ export default function SignUpPage() {
       } else {
         toast.error(response.message || "Sign-up failed. Please try again.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Signup error:", error);
-      toast.error(error.message || "Sign-up failed. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Sign-up failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

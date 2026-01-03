@@ -7,16 +7,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Clock, Zap, Shield } from "lucide-react";
 
+interface ServiceDeliveryData {
+  deliveryTime: number;
+  revisionPolicy: number;
+  rushDeliveryAvailable: boolean;
+  rushDeliveryFee: number;
+  deliveryGuarantee: string;
+  [key: string]: unknown; // Allow additional properties
+}
+
 interface ServiceDeliveryProps {
-  data: {
-    deliveryTime: number;
-    revisionPolicy: number;
-    rushDeliveryAvailable: boolean;
-    rushDeliveryFee: number;
-    deliveryGuarantee: string;
-    [key: string]: any; // Allow additional properties
-  };
-  onUpdate: (updates: any) => void;
+  data: ServiceDeliveryData;
+  onUpdate: (updates: Partial<ServiceDeliveryData>) => void;
 }
 
 export default function ServiceDelivery({ data, onUpdate }: ServiceDeliveryProps) {

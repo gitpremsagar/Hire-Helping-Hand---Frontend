@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { FreelancingServiceService } from "./freelancingService.service";
 import { FreelancingServiceQueryInput } from "./freelancingService.schemas";
 
-export const useGetFreelancingServices = (params: FreelancingServiceQueryInput = {}) => {
+export const useGetFreelancingServices = (params: Partial<FreelancingServiceQueryInput> = {}) => {
   return useQuery({
     queryKey: ["freelancing-services", params],
     queryFn: async () => {
-      const result = await FreelancingServiceService.getServices(params);
+      const result = await FreelancingServiceService.getServices(params as Parameters<typeof FreelancingServiceService.getServices>[0]);
       if (!result.success) {
         throw new Error(result.error || "Failed to fetch services");
       }
@@ -33,10 +33,12 @@ export const useGetFreelancingServiceById = (id: string) => {
   });
 };
 
+import { ServiceStatus } from "./freelancingService.types";
+
 export const useGetFreelancerServices = (freelancerId: string, params: {
   page?: number;
   limit?: number;
-  status?: string;
+  status?: ServiceStatus;
   isActive?: boolean;
 } = {}) => {
   return useQuery({
