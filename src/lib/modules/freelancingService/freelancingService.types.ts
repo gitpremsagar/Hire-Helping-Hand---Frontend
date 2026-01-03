@@ -39,6 +39,7 @@ export enum ServiceStatus {
 }
 
 export interface CreateFreelancingServiceRequest {
+  freelancerId: string;
   title: string;
   description: string;
   serviceCategoryId: string;
@@ -69,6 +70,12 @@ export interface UpdateFreelancingServiceRequest extends Partial<CreateFreelanci
 export interface FreelancingServiceResponse {
   success: boolean;
   data?: FreelancingService;
+  message?: string;
+  error?: string;
+}
+
+export interface CreateFreelancingServiceResponseData {
+  freelancingService: FreelancingService;
   message?: string;
   error?: string;
 }

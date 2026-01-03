@@ -17,8 +17,10 @@ import {
 import { toast } from "sonner";
 import { FreelancingServiceService } from "@/lib/modules/freelancingService/freelancingService.service";
 import { CreateFreelancingServiceRequest } from "@/lib/modules/freelancingService/freelancingService.types";
+import { useAppSelector } from "@/hooks/redux";
 
 export default function CreateNewServicePage() {
+  const user = useAppSelector((state) => state.auth.user);
   const [currentStep, setCurrentStep] = useState(1);
   const [serviceData, setServiceData] = useState({
     id: "",
@@ -85,8 +87,16 @@ export default function CreateNewServicePage() {
       return;
     }
 
+    if (!user?.id) {
+      toast.error("User not authenticated");
+      return;
+    }
+
     try {
-      const response = await FreelancingServiceService.saveAsDraft(serviceData as CreateFreelancingServiceRequest);
+      const response = await FreelancingServiceService.saveAsDraft({
+        ...serviceData,
+        freelancerId: user.id,
+      } as CreateFreelancingServiceRequest);
       if (response.success) {
         toast.success("Service saved as draft");
       }

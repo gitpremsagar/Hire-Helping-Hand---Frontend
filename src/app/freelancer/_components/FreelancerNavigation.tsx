@@ -24,6 +24,14 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import DashboardTab from "./DashboardTab";
+import { FreelancingServiceService } from "@/lib/modules/freelancingService/freelancingService.service";
+import { CreateFreelancingServiceRequest } from "@/lib/modules/freelancingService/freelancingService.types";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { serviceCategoryService } from "@/lib/modules/serviceCategory/serviceCategory.service";
+import { getServiceSubCategories } from "@/lib/modules/subCategory/subCategory.service";
 
 export default function FreelancerNavigation({
   className,
@@ -31,9 +39,12 @@ export default function FreelancerNavigation({
   className?: string;
 }) {
   const isMobile = useIsMobile();
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isCreatingDraft, setIsCreatingDraft] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -49,6 +60,67 @@ export default function FreelancerNavigation({
 
   const clearSearch = () => {
     setSearchQuery("");
+  };
+
+  const handleCreateNewService = async () => {
+    if (isCreatingDraft || !user) return;
+    
+    setIsCreatingDraft(true);
+    try {
+      // Get the first available category and subcategory
+      const categoriesResponse = await serviceCategoryService.getAll();
+      const categories = categoriesResponse.data?.serviceCategories || [];
+      
+      if (categories.length === 0) {
+        toast.error("No service categories available. Please contact support.");
+        return;
+      }
+      
+      const firstCategory = categories[0];
+      const subCategoriesResponse = await getServiceSubCategories();
+      const subCategories = subCategoriesResponse.data?.serviceSubCategories || [];
+      
+      const firstSubCategory = subCategories.find(sub => sub.serviceCategoryId === firstCategory.id) || subCategories[0];
+      
+      if (!firstSubCategory) {
+        toast.error("No service subcategories available. Please contact support.");
+        return;
+      }
+
+      const draftData: CreateFreelancingServiceRequest = {
+        freelancerId: user.id,
+        title: "draft",
+        description: "Draft service - please update with your service details",
+        serviceCategoryId: firstCategory.id,
+        serviceSubCategoryId: firstSubCategory.id,
+        deliveryTime: 1,
+        currency: "USD",
+        isCustomPricing: false,
+        revisionPolicy: 0,
+        rushDeliveryAvailable: false,
+        gallery: [],
+        portfolioItems: [],
+        communicationLanguage: ["English"],
+        tags: ["draft"],
+        keywords: ["draft"],
+      };
+
+      const response = await FreelancingServiceService.saveAsDraft(draftData);
+
+      console.log("Response:", response);
+      if (response.success && response.data?.id) {
+        toast.success("Draft service created successfully");
+        router.push(`/freelancer/create-new-service/${response.data.id}`);
+      } else {
+        console.error("Error creating draft service:", response);
+        toast.error(response.error || "Failed to create draft service");
+      }
+    } catch (error) {
+      console.error("Error creating draft service:", error);
+      toast.error("Failed to create draft service");
+    } finally {
+      setIsCreatingDraft(false);
+    }
   };
 
   return (
@@ -117,13 +189,14 @@ export default function FreelancerNavigation({
                 active={false}
               />
 
-              <Link
-                href="/freelancer/create-new-service"
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
+              <button
+                onClick={handleCreateNewService}
+                disabled={isCreatingDraft}
+                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Briefcase className="w-4 h-4" />
-                <span>Sell Your Service</span>
-              </Link>
+                <span>{isCreatingDraft ? "Creating..." : "Sell Your Service"}</span>
+              </button>
 
               <Link
                 href="/freelancer/notifications"
@@ -208,13 +281,14 @@ export default function FreelancerNavigation({
                         <span className="text-lg">Dashboard</span>
                       </Link>
 
-                      <Link
-                        href="/freelancer/create-new-service"
-                        className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                      <button
+                        onClick={handleCreateNewService}
+                        disabled={isCreatingDraft}
+                        className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed w-full text-left"
                       >
                         <Briefcase className="w-5 h-5" />
-                        <span className="text-lg">Sell Your Service</span>
-                      </Link>
+                        <span className="text-lg">{isCreatingDraft ? "Creating..." : "Sell Your Service"}</span>
+                      </button>
 
                       <Link
                         href="/freelancer/notifications"

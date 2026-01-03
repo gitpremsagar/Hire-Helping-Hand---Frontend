@@ -1,4 +1,5 @@
 export const API_HOSTNAME = process.env.NEXT_PUBLIC_API_HOSTNAME || "http://localhost:4000";
+// export const API_HOSTNAME = process.env.NODE_ENV === "development" ? "http://localhost:4000" : process.env.NEXT_PUBLIC_API_HOSTNAME;
 
 export const BASE_PATH = `${API_HOSTNAME}/api/v1`;
 
@@ -28,6 +29,16 @@ export const API = {
     VERIFY_PHONE: `${BASE_PATH}/auth/verify-phone`,
     ADD_ROLE_TO_USER: `${BASE_PATH}/auth/add-role-to-user`,
     REMOVE_ROLE_FROM_USER: `${BASE_PATH}/auth/remove-role-from-user`,
+  },
+  FREELANCING_SERVICES: {
+    GET_ALL: `${BASE_PATH}/freelancing-services`,
+    GET_BY_ID: `${BASE_PATH}/freelancing-services/:id`,
+    GET_BY_FREELANCER_ID: `${BASE_PATH}/freelancing-services/freelancer/:id`,
+    CREATE: `${BASE_PATH}/freelancing-services`,
+    UPDATE: `${BASE_PATH}/freelancing-services/:id`,
+    DELETE: `${BASE_PATH}/freelancing-services/:id`,
+    PUBLISH: `${BASE_PATH}/freelancing-services/:id/publish`,
+    SAVE_AS_DRAFT: `${BASE_PATH}/freelancing-services`,
   },
 }
 

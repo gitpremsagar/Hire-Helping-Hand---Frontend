@@ -7,20 +7,19 @@ import {
   FreelancingServiceListResponse,
   ServiceStatus
 } from "./freelancingService.types";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3001/api";
+import { API } from "@/lib/constants";
 
 export class FreelancingServiceService {
-  private static baseUrl = `${API_BASE_URL}/freelancing-services`;
+  private static baseUrl = API.FREELANCING_SERVICES;
 
   // Create a new freelancing service
   static async createService(data: CreateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxios.post(`${this.baseUrl}`, data);
+      const response = await customAxios.post(`${this.baseUrl.CREATE}`, data);
       return {
         success: true,
-        data: response.data,
-        message: "Service created successfully"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service created successfully"
       };
     } catch (error: any) {
       console.error("Error creating freelancing service:", error);
@@ -35,11 +34,11 @@ export class FreelancingServiceService {
   // Get a single freelancing service by ID
   static async getServiceById(id: string): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxios.get(`${this.baseUrl}/${id}`);
+      const response = await customAxios.get(`${this.baseUrl.GET_BY_ID.replace(":id", id)}`);
       return {
         success: true,
-        data: response.data,
-        message: "Service retrieved successfully"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service retrieved successfully"
       };
     } catch (error: any) {
       console.error("Error fetching freelancing service:", error);
@@ -64,12 +63,12 @@ export class FreelancingServiceService {
     sortOrder?: "asc" | "desc";
   } = {}): Promise<FreelancingServiceListResponse> {
     try {
-      const response = await customAxios.get(`${this.baseUrl}`, { params });
+      const response = await customAxios.get(`${this.baseUrl.GET_ALL}`, { params });
       return {
         success: true,
-        data: response.data.services,
-        pagination: response.data.pagination,
-        message: "Services retrieved successfully"
+        data: response.data.data?.freelancingServices, // Extract from nested structure
+        pagination: response.data.data?.pagination,
+        message: response.data.message || "Services retrieved successfully"
       };
     } catch (error: any) {
       console.error("Error fetching freelancing services:", error);
@@ -85,11 +84,11 @@ export class FreelancingServiceService {
   static async updateService(data: UpdateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
       const { id, ...updateData } = data;
-      const response = await customAxios.put(`${this.baseUrl}/${id}`, updateData);
+      const response = await customAxios.put(`${this.baseUrl.UPDATE.replace(":id", id)}`, updateData);
       return {
         success: true,
-        data: response.data,
-        message: "Service updated successfully"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service updated successfully"
       };
     } catch (error: any) {
       console.error("Error updating freelancing service:", error);
@@ -104,7 +103,7 @@ export class FreelancingServiceService {
   // Delete a freelancing service
   static async deleteService(id: string): Promise<FreelancingServiceResponse> {
     try {
-      await customAxios.delete(`${this.baseUrl}/${id}`);
+      await customAxios.delete(`${this.baseUrl.DELETE.replace(":id", id)}`);
       return {
         success: true,
         message: "Service deleted successfully"
@@ -122,11 +121,11 @@ export class FreelancingServiceService {
   // Publish a service (change status from DRAFT to PENDING_APPROVAL)
   static async publishService(id: string): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxios.patch(`${this.baseUrl}/${id}/publish`);
+      const response = await customAxios.patch(`${this.baseUrl.PUBLISH.replace(":id", id)}`);
       return {
         success: true,
-        data: response.data,
-        message: "Service published successfully"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service published successfully"
       };
     } catch (error: any) {
       console.error("Error publishing freelancing service:", error);
@@ -142,11 +141,11 @@ export class FreelancingServiceService {
   static async saveAsDraft(data: CreateFreelancingServiceRequest): Promise<FreelancingServiceResponse> {
     try {
       const draftData = { ...data, status: ServiceStatus.DRAFT };
-      const response = await customAxios.post(`${this.baseUrl}`, draftData);
+      const response = await customAxios.post(`${this.baseUrl.SAVE_AS_DRAFT}`, draftData);
       return {
         success: true,
-        data: response.data,
-        message: "Service saved as draft"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service saved as draft"
       };
     } catch (error: any) {
       console.error("Error saving service as draft:", error);
@@ -166,12 +165,12 @@ export class FreelancingServiceService {
     isActive?: boolean;
   } = {}): Promise<FreelancingServiceListResponse> {
     try {
-      const response = await customAxios.get(`${this.baseUrl}/freelancer/${freelancerId}`, { params });
+      const response = await customAxios.get(`${this.baseUrl.GET_BY_FREELANCER_ID.replace(":id", freelancerId)}`, { params });
       return {
         success: true,
-        data: response.data.services,
-        pagination: response.data.pagination,
-        message: "Freelancer services retrieved successfully"
+        data: response.data.data?.freelancingServices, // Extract from nested structure
+        pagination: response.data.data?.pagination,
+        message: response.data.message || "Freelancer services retrieved successfully"
       };
     } catch (error: any) {
       console.error("Error fetching freelancer services:", error);
@@ -186,11 +185,11 @@ export class FreelancingServiceService {
   // Update service status
   static async updateServiceStatus(id: string, status: ServiceStatus): Promise<FreelancingServiceResponse> {
     try {
-      const response = await customAxios.patch(`${this.baseUrl}/${id}/status`, { status });
+      const response = await customAxios.patch(`${this.baseUrl.UPDATE.replace(":id", id)}`, { status });
       return {
         success: true,
-        data: response.data,
-        message: "Service status updated successfully"
+        data: response.data.data, // Extract the actual service data from the backend response
+        message: response.data.message || "Service status updated successfully"
       };
     } catch (error: any) {
       console.error("Error updating service status:", error);
