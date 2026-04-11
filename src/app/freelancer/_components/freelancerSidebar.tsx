@@ -3,10 +3,8 @@
 import {
   ChevronDown,
   Search,
-  Loader2,
   AlertCircle,
   RefreshCw,
-  Grid3X3,
   Menu,
 } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -37,6 +35,11 @@ import { Badge } from "@/components/ui/badge";
 import { API } from "@/lib/constants";
 import { ServiceCategoryResponse } from "@/lib/modules/serviceCategory/serviceCategory.type";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  DEFAULT_CATEGORY_SIDEBAR_ICON,
+  DEFAULT_SUBCATEGORY_SIDEBAR_ICON,
+  getTaxonomyLucideIcon,
+} from "@/lib/service-taxonomy-icons";
 
 interface FreelancerSidebarProps {
   className?: string;
@@ -229,6 +232,10 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                           .toLowerCase()
                           .includes(searchQuery.toLowerCase())
                     );
+                  const CategoryIcon = getTaxonomyLucideIcon(
+                    category.icon,
+                    DEFAULT_CATEGORY_SIDEBAR_ICON
+                  );
 
                   return (
                     <Collapsible
@@ -246,8 +253,14 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                               isExpanded ? "Collapse" : "Expand"
                             } ${category.name} category`}
                           >
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div
+                                className="flex shrink-0 items-center justify-center w-7 h-7 rounded-md bg-sidebar-accent/80 text-sidebar-accent-foreground"
+                                aria-hidden
+                              >
+                                <CategoryIcon className="h-3.5 w-3.5" />
+                              </div>
+                              <span className="font-medium truncate">
                                 {category.name}
                               </span>
                               <Badge
@@ -275,6 +288,10 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                                   category.slug,
                                   subCategory.slug
                                 );
+                                const SubIcon = getTaxonomyLucideIcon(
+                                  subCategory.icon,
+                                  DEFAULT_SUBCATEGORY_SIDEBAR_ICON
+                                );
                                 return (
                                   <SidebarMenuItem key={subCategory.id}>
                                     <SidebarMenuButton
@@ -294,14 +311,14 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                                         aria-label={`View ${subCategory.name} jobs`}
                                       >
                                         <div
-                                          className={`flex items-center justify-center w-6 h-6 rounded-md ${
+                                          className={`flex shrink-0 items-center justify-center w-6 h-6 rounded-md ${
                                             isActive
                                               ? "bg-white/20 text-white"
                                               : "bg-green-600/10 text-green-600"
                                           }`}
                                           aria-hidden="true"
                                         >
-                                          <Grid3X3 className="h-3 w-3" />
+                                          <SubIcon className="h-3 w-3" />
                                         </div>
                                         <span
                                           className={`flex-1 truncate ${

@@ -1,3 +1,15 @@
-export default function JobsPage({ params }: { params: { serviceCategorySlug: string, serviceSubCategorySlug: string } }) {
-  return <div>JobsPage {params.serviceCategorySlug} {params.serviceSubCategorySlug}</div>;
+type JobsPageProps = {
+  params: Promise<{
+    serviceCategorySlug: string;
+    serviceSubCategorySlug: string;
+  }>;
+};
+
+export default async function JobsPage({ params }: JobsPageProps) {
+  const { serviceCategorySlug, serviceSubCategorySlug } = await params;
+  return (
+    <div>
+      JobsPage {serviceCategorySlug} {serviceSubCategorySlug}
+    </div>
+  );
 }
