@@ -1,10 +1,14 @@
 import { z } from "zod";
+import { SERVICE_CATEGORY_ENUM, SERVICE_SUBCATEGORY_ENUM } from "@/lib/constants/serviceTaxonomyEnums";
+
+const categoryEnum = z.enum(SERVICE_CATEGORY_ENUM);
+const subCategoryEnum = z.enum(SERVICE_SUBCATEGORY_ENUM);
 
 export const createFreelancingServiceSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be less than 100 characters"),
   description: z.string().min(10, "Description must be at least 10 characters").max(2000, "Description must be less than 2000 characters"),
-  serviceCategoryId: z.string().min(1, "Service category is required"),
-  serviceSubCategoryId: z.string().min(1, "Service subcategory is required"),
+  serviceCategoryId: categoryEnum,
+  serviceSubCategoryId: subCategoryEnum,
   basePrice: z.number().min(0, "Base price must be non-negative").optional(),
   currency: z.string().default("USD"),
   isCustomPricing: z.boolean().default(false),

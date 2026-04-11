@@ -1,17 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { ServiceCategory } from "@/lib/modules/serviceCategory/serviceCategory.type";
+import { ServiceCategoryRow } from "@/lib/modules/serviceCategory/serviceCategory.type";
 import { Badge } from "@/components/ui/badge";
-import { SubCategoryActions } from "./SubCategoryActions";
-import { AddSubCategoryButton } from "./AddSubCategoryButton";
 
 interface SubCategoriesCellProps {
-  category: ServiceCategory;
+  category: ServiceCategoryRow;
 }
 
 export function SubCategoriesCell({ category }: SubCategoriesCellProps) {
-  const router = useRouter();
   const subcategories = category.ServiceSubCategory || [];
 
   return (
@@ -20,13 +16,6 @@ export function SubCategoriesCell({ category }: SubCategoriesCellProps) {
         <div className="flex flex-col gap-1.5">
           {subcategories.map((sub) => (
             <div key={sub.id} className="flex items-center gap-1.5 bg-muted/50 rounded-md px-2 py-1">
-              <SubCategoryActions
-                subCategory={sub}
-                onSuccess={() => {
-                  // Refresh the page or refetch data
-                  router.refresh();
-                }}
-              />
               <Badge variant="outline" className="text-xs font-medium">
                 {sub.name}
               </Badge>
@@ -39,15 +28,6 @@ export function SubCategoriesCell({ category }: SubCategoriesCellProps) {
           <span className="text-sm">No subcategories</span>
         </div>
       )}
-      <div className="pt-1">
-        <AddSubCategoryButton
-          category={category}
-          onSuccess={() => {
-            router.refresh();
-          }}
-        />
-      </div>
     </div>
   );
 }
-

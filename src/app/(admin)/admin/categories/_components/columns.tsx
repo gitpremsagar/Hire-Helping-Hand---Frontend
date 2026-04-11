@@ -1,12 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ServiceCategory } from "@/lib/modules/serviceCategory/serviceCategory.type";
+import { ServiceCategoryRow } from "@/lib/modules/serviceCategory/serviceCategory.type";
 import { Badge } from "@/components/ui/badge";
-import { ActionsCell } from "./ActionsCell";
 import { SubCategoriesCell } from "./SubCategoriesCell";
 
-export const columns: ColumnDef<ServiceCategory>[] = [
+export const columns: ColumnDef<ServiceCategoryRow>[] = [
   {
     accessorKey: "name",
     header: "Category Name",
@@ -109,14 +108,6 @@ export const columns: ColumnDef<ServiceCategory>[] = [
           <span className="text-sm font-medium text-muted-foreground">{formattedDate}</span>
         </div>
       );
-    },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const category = row.original;
-      return <ActionsCell category={category} />;
     },
   },
 ];

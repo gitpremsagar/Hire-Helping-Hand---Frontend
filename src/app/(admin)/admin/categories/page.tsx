@@ -2,9 +2,7 @@ import { API } from "@/lib/constants";
 import { ServiceCategoryResponse } from "@/lib/modules/serviceCategory/serviceCategory.type";
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-import { Button } from "@/components/ui/button";
-import { Plus, RefreshCw } from "lucide-react";
-import { AddCategorySheet } from "./_components/AddCategorySheet";
+import { Plus } from "lucide-react";
 import { RefreshButton } from "./_components/RefreshButton";
 
 async function getCategories() {
@@ -55,12 +53,11 @@ export default async function CategoryPage() {
             Service Categories
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground">
-            Manage service categories and their subcategories
+            Taxonomy is defined in code; this view is read-only
           </p>
         </div>
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           <RefreshButton />
-          <AddCategorySheet />            
         </div>
       </div>
 
@@ -96,9 +93,8 @@ export default async function CategoryPage() {
             No categories found
           </h3>
           <p className="text-muted-foreground mb-6 max-w-md">
-            Get started by creating your first service category to organize your services and jobs.
+            No categories were returned from the API. Check that the backend is running and reachable.
           </p>
-          <AddCategorySheet />
         </div>
       )}
     </div>
