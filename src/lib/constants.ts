@@ -27,8 +27,11 @@ export const API = {
     RESET_PASSWORD: `${BASE_PATH}/auth/reset-password`,
     VERIFY_EMAIL: `${BASE_PATH}/auth/verify-email`,
     VERIFY_PHONE: `${BASE_PATH}/auth/verify-phone`,
-    ADD_ROLE_TO_USER: `${BASE_PATH}/auth/add-role-to-user`,
-    REMOVE_ROLE_FROM_USER: `${BASE_PATH}/auth/remove-role-from-user`,
+    ADD_ROLE_TO_USER: `${BASE_PATH}/auth/user-role`,
+    REMOVE_ROLE_FROM_USER: `${BASE_PATH}/auth/user-role`,
+  },
+  ROLES: {
+    LIST: `${BASE_PATH}/roles`,
   },
   FREELANCING_SERVICES: {
     GET_ALL: `${BASE_PATH}/freelancing-services`,

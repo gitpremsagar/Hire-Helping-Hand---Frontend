@@ -1,3 +1,5 @@
+import type { AppRole } from "@/lib/constants/app-role";
+
 // Auth API Request Types
 export type SignUpRequest = {
   name: string;
@@ -33,16 +35,12 @@ export type VerifyPhoneRequest = {
 
 export type SetUserRoleRequest = {
   userId: string;
-  roleId: string;
-};
-
-export type UpdateUserRoleRequest = {
-  userId: string;
-  roleId: string;
+  role: AppRole;
 };
 
 export type DeleteUserRoleRequest = {
   userId: string;
+  role: AppRole;
 };
 
 // Auth API Response Types
@@ -91,11 +89,6 @@ export type VerifyPhoneResponse = {
 };
 
 export type SetUserRoleResponse = {
-  success: boolean;
-  message: string;
-};
-
-export type UpdateUserRoleResponse = {
   success: boolean;
   message: string;
 };

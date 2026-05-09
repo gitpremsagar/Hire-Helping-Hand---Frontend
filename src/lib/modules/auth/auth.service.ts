@@ -7,9 +7,6 @@ import {
   resetPasswordSchema,
   verifyEmailSchema,
   verifyPhoneSchema,
-  setUserRoleSchema,
-  updateUserRoleSchema,
-  deleteUserRoleSchema
 } from "./auth.schemas";
 import {
   SignUpRequest,
@@ -26,8 +23,6 @@ import {
   VerifyPhoneResponse,
   SetUserRoleRequest,
   SetUserRoleResponse,
-  UpdateUserRoleRequest,
-  UpdateUserRoleResponse,
   DeleteUserRoleRequest,
   DeleteUserRoleResponse,
   GetRefreshedAccessTokenResponse,
@@ -144,7 +139,7 @@ export const authService = {
 
   removeRoleFromUser: async (data: DeleteUserRoleRequest): Promise<DeleteUserRoleResponse> => {
     try {
-      const response = await customAxios.post(API.AUTH.REMOVE_ROLE_FROM_USER, data);
+      const response = await customAxios.delete(API.AUTH.REMOVE_ROLE_FROM_USER, { data });
       return response.data;
     } catch (error) {
       console.error("Remove role from user error:", error);

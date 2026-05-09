@@ -120,9 +120,24 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
 
   // Helper function to check if a menu item is active
   const isMenuItemActive = (categorySlug: string, subCategorySlug: string) => {
-    const expectedPath = `/jobs/${categorySlug}/${subCategorySlug}`;
+    const expectedPath = `/freelancer/jobs/${categorySlug}/${subCategorySlug}`;
     return pathname === expectedPath;
   };
+
+  // Auto-expand the category that contains the active subcategory
+  // and collapse all others whenever the route or category list changes.
+  useEffect(() => {
+    if (!categories) return;
+    const activeCategory = categories.data.serviceCategories.find((cat) =>
+      cat.ServiceSubCategory.some((sub) =>
+        isMenuItemActive(cat.slug, sub.slug)
+      )
+    );
+    setExpandedCategories(
+      activeCategory ? new Set([activeCategory.id]) : new Set()
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, categories]);
 
   const renderLoadingState = () => (
     <div className="space-y-4 p-2">
@@ -166,26 +181,23 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
         className={`${className} ${isMobile ? "w-full" : ""}`}
         variant="floating"
       >
-        <SidebarHeader className="border-b">
-          <div className="flex items-center justify-between px-2 py-2">
-            <div className="flex items-center gap-2">
-              {/* <Grid3X3 className="h-5 w-5 text-primary" /> */}
-              <SidebarTrigger className="h-8 w-8 flex-shrink-0  -translate-x-2" />
-              <span className="text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-                Jobs
-              </span>
-            </div>
+        <SidebarHeader className="border-b border-sidebar-border/60 px-2 py-2 gap-2">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="h-8 w-8 flex-shrink-0" />
+            <span className="text-base font-semibold tracking-tight text-foreground group-data-[collapsible=icon]:hidden">
+              Jobs
+            </span>
           </div>
 
           {/* Search Input */}
-          <div className="px-2 pb-2 group-data-[collapsible=icon]:hidden">
+          <div className="group-data-[collapsible=icon]:hidden">
             <div className="relative">
-              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <SidebarInput
                 placeholder="Search jobs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-8"
+                className="h-9 pl-8 pr-8"
                 aria-label="Search jobs"
                 role="searchbox"
               />
@@ -193,7 +205,7 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 p-0"
+                  className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 p-0 text-muted-foreground hover:text-foreground"
                   onClick={() => setSearchQuery("")}
                   aria-label="Clear search"
                 >
@@ -204,13 +216,13 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
           </div>
         </SidebarHeader>
 
-        <SidebarContent className="overflow-y-auto">
+        <SidebarContent className="overflow-x-hidden overflow-y-auto">
           {loading && renderLoadingState()}
 
           {error && renderErrorState()}
 
           {!loading && !error && (
-            <div className="space-y-1">
+            <div className="flex flex-col gap-0.5 px-2 py-2">
               {filteredCategories.length === 0 && searchQuery ? (
                 <div className="flex flex-col items-center justify-center p-4 text-center">
                   <Search className="h-8 w-8 text-muted-foreground mb-2" />
@@ -236,6 +248,9 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                     category.icon,
                     DEFAULT_CATEGORY_SIDEBAR_ICON
                   );
+                  const isCategoryActive = category.ServiceSubCategory.some(
+                    (sub) => isMenuItemActive(category.slug, sub.slug)
+                  );
 
                   return (
                     <Collapsible
@@ -244,45 +259,61 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                       onOpenChange={() => toggleCategory(category.id)}
                       className="group/collapsible"
                     >
-                      <SidebarGroup>
+                      <SidebarGroup className="p-0">
                         <SidebarGroupLabel asChild>
                           <CollapsibleTrigger
-                            className="w-full flex items-center justify-between p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors focus:outline-none"
+                            className={`group/trigger relative w-full flex items-center justify-between gap-2 h-auto px-2.5 py-2 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring ${
+                              isCategoryActive
+                                ? "bg-green-500/10 text-green-700 dark:text-green-300 font-semibold"
+                                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            }`}
                             aria-expanded={isExpanded}
                             aria-label={`${
                               isExpanded ? "Collapse" : "Expand"
                             } ${category.name} category`}
                           >
-                            <div className="flex items-center gap-2 min-w-0">
+                            {isCategoryActive && (
+                              <span
+                                aria-hidden
+                                className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-green-600"
+                              />
+                            )}
+                            <div className="flex items-center gap-2.5 min-w-0">
                               <div
-                                className="flex shrink-0 items-center justify-center w-7 h-7 rounded-md bg-sidebar-accent/80 text-sidebar-accent-foreground"
+                                className={`flex shrink-0 items-center justify-center w-7 h-7 rounded-md transition-colors ${
+                                  isCategoryActive
+                                    ? "bg-green-600 text-white shadow-sm"
+                                    : "bg-sidebar-accent text-sidebar-accent-foreground/80 group-hover/trigger:text-sidebar-accent-foreground"
+                                }`}
                                 aria-hidden
                               >
                                 <CategoryIcon className="h-3.5 w-3.5" />
                               </div>
-                              <span className="font-medium truncate">
-                                {category.name}
-                              </span>
+                              <span className="truncate">{category.name}</span>
                               <Badge
                                 variant="secondary"
-                                className="text-xs"
+                                className={`h-5 min-w-5 px-1.5 text-[10px] font-medium rounded-full leading-none flex items-center justify-center ${
+                                  isCategoryActive
+                                    ? "bg-green-600/15 text-green-700 dark:text-green-300 border-0"
+                                    : ""
+                                }`}
                                 aria-label={`${filteredSubCategories.length} subcategories`}
                               >
                                 {filteredSubCategories.length}
                               </Badge>
                             </div>
                             <ChevronDown
-                              className={`h-4 w-4 transition-transform duration-200 ${
+                              className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 ${
                                 isExpanded ? "rotate-180" : ""
-                              }`}
+                              } ${isCategoryActive ? "text-green-600 dark:text-green-300" : ""}`}
                               aria-hidden="true"
                             />
                           </CollapsibleTrigger>
                         </SidebarGroupLabel>
 
                         <CollapsibleContent>
-                          <SidebarGroupContent>
-                            <SidebarMenu>
+                          <SidebarGroupContent className="pt-1">
+                            <SidebarMenu className="ml-3.5 pl-3 border-l border-sidebar-border/60 gap-0.5">
                               {filteredSubCategories.map((subCategory) => {
                                 const isActive = isMenuItemActive(
                                   category.slug,
@@ -297,31 +328,31 @@ export function FreelancerSidebar({ className }: FreelancerSidebarProps) {
                                     <SidebarMenuButton
                                       asChild
                                       isActive={isActive}
-                                      className={`group/menu-item hover:bg-gradient-to-r from-green-600 to-blue-600 hover:text-white ${
+                                      className={`group/menu-item h-8 transition-colors hover:bg-green-600 hover:text-white ${
                                         isActive
-                                          ? "bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 border-0"
+                                          ? "bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700 border-0 shadow-sm"
                                           : ""
                                       }`}
                                     >
                                       <Link
                                         href={`/freelancer/jobs/${category.slug}/${subCategory.slug}`}
-                                        className={`flex items-center gap-3 w-full focus:outline-none rounded-md hover:text-white ${
+                                        className={`flex items-center gap-2.5 w-full focus:outline-none rounded-md ${
                                           isActive ? "text-white" : ""
                                         }`}
                                         aria-label={`View ${subCategory.name} jobs`}
                                       >
                                         <div
-                                          className={`flex shrink-0 items-center justify-center w-6 h-6 rounded-md ${
+                                          className={`flex shrink-0 items-center justify-center w-6 h-6 rounded-md transition-colors ${
                                             isActive
                                               ? "bg-white/20 text-white"
-                                              : "bg-green-600/10 text-green-600"
+                                              : "bg-green-500/10 text-green-600 dark:text-green-400 group-hover/menu-item:bg-white/20 group-hover/menu-item:text-white"
                                           }`}
                                           aria-hidden="true"
                                         >
                                           <SubIcon className="h-3 w-3" />
                                         </div>
                                         <span
-                                          className={`flex-1 truncate ${
+                                          className={`flex-1 truncate text-sm ${
                                             isActive ? "text-white" : ""
                                           }`}
                                         >

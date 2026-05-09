@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { APP_ROLES } from "@/lib/constants/app-role";
 // Validation schemas
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,16 +38,12 @@ const verifyPhoneSchema = z.object({
 
 const setUserRoleSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
-  roleId: z.string().min(1, "Role ID is required"),
-});
-
-const updateUserRoleSchema = z.object({
-  userId: z.string().min(1, "User ID is required"),
-  roleId: z.string().min(1, "Role ID is required"),
+  role: z.enum(APP_ROLES),
 });
 
 const deleteUserRoleSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
+  role: z.enum(APP_ROLES),
 });
 
 export {
@@ -57,6 +54,5 @@ export {
   verifyEmailSchema,
   verifyPhoneSchema,
   setUserRoleSchema,
-  updateUserRoleSchema,
   deleteUserRoleSchema,
 };
