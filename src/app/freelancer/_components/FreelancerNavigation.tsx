@@ -24,14 +24,12 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import DashboardTab from "./DashboardTab";
-import { FreelancingServiceService } from "@/lib/modules/freelancingService/freelancingService.service";
-import { CreateFreelancingServiceRequest } from "@/lib/modules/freelancingService/freelancingService.types";
+import { createFreelancingServiceDraft } from "@/lib/freelancer/create-draft-service";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { serviceCategoryService } from "@/lib/modules/serviceCategory/serviceCategory.service";
-import { getServiceSubCategories } from "@/lib/modules/subCategory/subCategory.service";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function FreelancerNavigation({
   className,
@@ -40,6 +38,7 @@ export default function FreelancerNavigation({
 }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const user = useSelector((state: RootState) => state.auth.user);
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,64 +63,27 @@ export default function FreelancerNavigation({
 
   const handleCreateNewService = async () => {
     if (isCreatingDraft || !user) return;
-    
+
     setIsCreatingDraft(true);
     try {
-      // Get the first available category and subcategory
-      const categoriesResponse = await serviceCategoryService.getAll();
-      const categories = categoriesResponse.data?.serviceCategories || [];
-      
-      if (categories.length === 0) {
-        toast.error("No service categories available. Please contact support.");
-        return;
-      }
-      
-      const firstCategory = categories[0];
-      const subCategoriesResponse = await getServiceSubCategories();
-      const subCategories = subCategoriesResponse.data?.serviceSubCategories || [];
-      
-      const firstSubCategory = subCategories.find(sub => sub.serviceCategoryId === firstCategory.id) || subCategories[0];
-      
-      if (!firstSubCategory) {
-        toast.error("No service subcategories available. Please contact support.");
-        return;
-      }
-
-      const draftData: CreateFreelancingServiceRequest = {
+      const result = await createFreelancingServiceDraft({
         freelancerId: user.id,
-        title: "draft",
-        description: "Draft service - please update with your service details",
-        serviceCategoryId: firstCategory.id as CreateFreelancingServiceRequest["serviceCategoryId"],
-        serviceSubCategoryId: firstSubCategory.id as CreateFreelancingServiceRequest["serviceSubCategoryId"],
-        deliveryTime: 1,
-        currency: "USD",
-        isCustomPricing: false,
-        revisionPolicy: 0,
-        rushDeliveryAvailable: false,
-        gallery: [],
-        portfolioItems: [],
-        communicationLanguage: ["English"],
-        tags: ["draft"],
-        keywords: ["draft"],
-      };
-
-      const response = await FreelancingServiceService.saveAsDraft(draftData);
-
-      console.log("Response:", response);
-      if (response.success && response.data?.id) {
+      });
+      if (result.ok) {
         toast.success("Draft service created successfully");
-        router.push(`/freelancer/create-new-service/${response.data.id}`);
+        await queryClient.invalidateQueries({
+          queryKey: ["freelancer-services", user.id],
+        });
+        router.push(`/freelancer/create-new-service/${result.serviceId}`);
       } else {
-        console.error("Error creating draft service:", response);
-        toast.error(response.error || "Failed to create draft service");
+        toast.error(result.error);
       }
-    } catch (error) {
-      console.error("Error creating draft service:", error);
-      toast.error("Failed to create draft service");
     } finally {
       setIsCreatingDraft(false);
     }
   };
+
+  const dashboardHref = user?.id ? `/freelancer/dashboard/${user.id}` : "/log-in";
 
   return (
     <nav
@@ -274,7 +236,7 @@ export default function FreelancerNavigation({
                     {/* Mobile Navigation Links */}
                     <div className="flex flex-col space-y-2">
                       <Link
-                        href="/freelancer/dashboard"
+                        href={dashboardHref}
                         className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         <LayoutDashboard className="w-5 h-5" />

@@ -4,16 +4,16 @@
 import DynamicNavItem from "./DynamicNavItem";
 import { Users, Search, Star, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
-import { SidebarTrigger } from "../ui/sidebar";
+} from "@/components/ui/sheet";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 

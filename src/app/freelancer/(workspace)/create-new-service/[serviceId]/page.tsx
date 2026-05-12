@@ -182,7 +182,11 @@ export default function CreateNewServicePage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
-            <Link href="/freelancer/dashboard">
+            <Link
+              href={
+                user?.id ? `/freelancer/dashboard/${user.id}` : "/log-in"
+              }
+            >
               <Button variant="ghost" size="sm" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back to Dashboard

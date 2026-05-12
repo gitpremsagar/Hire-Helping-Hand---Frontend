@@ -30,9 +30,9 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./ui/collapsible";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { API } from "@/lib/constants";
 import { ServiceCategoryResponse } from "@/lib/modules/serviceCategory/serviceCategory.type";
 import { useIsMobile } from "@/hooks/use-mobile";

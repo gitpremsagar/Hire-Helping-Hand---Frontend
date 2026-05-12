@@ -4,15 +4,44 @@ import {
   UpdateFreelancingServiceRequest,
   FreelancingServiceResponse,
   FreelancingServiceListResponse,
-  ServiceStatus
+  FreelancingServiceListPagination,
+  ServiceStatus,
 } from "./freelancingService.types";
 import { API } from "@/lib/constants";
 import { AxiosError } from "axios";
+import { freelancingServiceQuerySchema, FreelancingServiceQueryInput } from "./freelancingService.schemas";
 
 interface AxiosErrorResponse {
   message?: string;
   data?: {
     message?: string;
+  };
+}
+
+/** Backend pagination shape from `getFreelancingServices` / `getFreelancingServicesByFreelancer`. */
+interface ApiFreelancingServicesPagination {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+function normalizeFreelancingServicesPagination(
+  p: ApiFreelancingServicesPagination | undefined
+): FreelancingServiceListPagination | undefined {
+  if (!p) return undefined;
+  return {
+    currentPage: p.currentPage,
+    totalPages: p.totalPages,
+    totalItems: p.totalItems,
+    itemsPerPage: p.itemsPerPage,
+    hasNextPage: p.hasNextPage,
+    hasPrevPage: p.hasPrevPage,
+    page: p.currentPage,
+    limit: p.itemsPerPage,
+    total: p.totalItems,
   };
 }
 
@@ -59,25 +88,43 @@ export class FreelancingServiceService {
     }
   }
 
-  // Get freelancing services with pagination and filters
-  static async getServices(params: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    category?: string;
-    subCategory?: string;
-    status?: ServiceStatus;
-    isActive?: boolean;
-    sortBy?: string;
-    sortOrder?: "asc" | "desc";
-  } = {}): Promise<FreelancingServiceListResponse> {
+  // Get freelancing services with pagination and filters (query keys match backend `getFreelancingServicesQuerySchema`)
+  static async getServices(
+    params: Partial<FreelancingServiceQueryInput> = {}
+  ): Promise<FreelancingServiceListResponse> {
     try {
-      const response = await customAxios.get(`${this.baseUrl.GET_ALL}`, { params });
+      const parsed = freelancingServiceQuerySchema.parse({
+        page: 1,
+        limit: 12,
+        sortBy: "createdAt",
+        sortOrder: "desc",
+        ...params,
+      });
+
+      const axiosParams: Record<string, string | number> = {
+        page: parsed.page,
+        limit: parsed.limit,
+        sortBy: parsed.sortBy,
+        sortOrder: parsed.sortOrder,
+      };
+      if (parsed.search) axiosParams.search = parsed.search;
+      if (parsed.categoryId) axiosParams.categoryId = parsed.categoryId;
+      if (parsed.subCategoryId) axiosParams.subCategoryId = parsed.subCategoryId;
+      if (parsed.freelancerId) axiosParams.freelancerId = parsed.freelancerId;
+      if (parsed.status) axiosParams.status = parsed.status;
+      if (parsed.minPrice !== undefined) axiosParams.minPrice = parsed.minPrice;
+      if (parsed.maxPrice !== undefined) axiosParams.maxPrice = parsed.maxPrice;
+
+      const response = await customAxios.get(`${this.baseUrl.GET_ALL}`, {
+        params: axiosParams,
+      });
       return {
         success: true,
-        data: response.data.data?.freelancingServices, // Extract from nested structure
-        pagination: response.data.data?.pagination,
-        message: response.data.message || "Services retrieved successfully"
+        data: response.data.data?.freelancingServices,
+        pagination: normalizeFreelancingServicesPagination(
+          response.data.data?.pagination
+        ),
+        message: response.data.message || "Services retrieved successfully",
       };
     } catch (error) {
       console.error("Error fetching freelancing services:", error);
@@ -182,9 +229,11 @@ export class FreelancingServiceService {
       const response = await customAxios.get(`${this.baseUrl.GET_BY_FREELANCER_ID.replace(":id", freelancerId)}`, { params });
       return {
         success: true,
-        data: response.data.data?.freelancingServices, // Extract from nested structure
-        pagination: response.data.data?.pagination,
-        message: response.data.message || "Freelancer services retrieved successfully"
+        data: response.data.data?.freelancingServices,
+        pagination: normalizeFreelancingServicesPagination(
+          response.data.data?.pagination
+        ),
+        message: response.data.message || "Freelancer services retrieved successfully",
       };
     } catch (error) {
       console.error("Error fetching freelancer services:", error);

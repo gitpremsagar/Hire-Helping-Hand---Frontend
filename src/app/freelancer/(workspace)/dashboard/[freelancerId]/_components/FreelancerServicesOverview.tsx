@@ -115,7 +115,7 @@ export function FreelancerServicesOverview({ freelancerId }: FreelancerServicesO
     mockServices.filter(service => service.rating > 0).length;
 
   return (
-    <Card>
+    <Card id="freelancer-services">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">

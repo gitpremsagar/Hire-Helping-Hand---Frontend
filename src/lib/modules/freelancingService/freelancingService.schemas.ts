@@ -32,15 +32,20 @@ export const updateFreelancingServiceSchema = createFreelancingServiceSchema.par
   id: z.string().min(1, "Service ID is required"),
 });
 
+/** Query params aligned with `GET /api/v1/freelancing-services` (backend `getFreelancingServicesQuerySchema`). */
 export const freelancingServiceQuerySchema = z.object({
   page: z.number().min(1).default(1),
-  limit: z.number().min(1).max(100).default(10),
+  limit: z.number().min(1).max(100).default(12),
   search: z.string().optional(),
-  category: z.string().optional(),
-  subCategory: z.string().optional(),
-  status: z.enum(["DRAFT", "PENDING_APPROVAL", "APPROVED", "REJECTED", "SUSPENDED", "ARCHIVED"]).optional(),
-  isActive: z.boolean().optional(),
-  sortBy: z.enum(["createdAt", "updatedAt", "title", "basePrice"]).default("createdAt"),
+  categoryId: categoryEnum.optional(),
+  subCategoryId: subCategoryEnum.optional(),
+  freelancerId: z.string().optional(),
+  status: z
+    .enum(["DRAFT", "PENDING_APPROVAL", "APPROVED", "REJECTED", "SUSPENDED", "ARCHIVED"])
+    .optional(),
+  minPrice: z.number().optional(),
+  maxPrice: z.number().optional(),
+  sortBy: z.enum(["price", "rating", "deliveryTime", "createdAt"]).default("createdAt"),
   sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 

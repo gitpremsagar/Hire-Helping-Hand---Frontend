@@ -2,7 +2,6 @@ import axios from "axios";
 import { store } from "@/redux/store";
 import { authService } from "./modules/auth/auth.service";
 import { resetAuth } from "./modules/auth/auth.redux.slice";
-import router from "next/router";
 
 const customAxios = axios.create({
   headers: {
@@ -29,8 +28,9 @@ customAxios.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    const status = error.response?.status;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (status === 401 && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -38,20 +38,18 @@ customAxios.interceptors.response.use(
         const response =
           await authService.getRefreshedAccessToken();
         originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
-      } catch (error) {
-        console.error("Get refreshed access token error:", error);
-        // Reset the auth state
+      } catch (refreshError) {
+        console.error("Get refreshed access token error:", refreshError);
         store.dispatch(resetAuth());
-        // Redirect to the login page
-        router.push("/login"); 
-        return Promise.reject(error);
+        if (typeof window !== "undefined") {
+          window.location.assign("/log-in");
+        }
+        return Promise.reject(refreshError);
       }
 
-      // Retry the request
       return customAxios(originalRequest);
     }
 
-    // If the error is not a 401, reject the promise
     return Promise.reject(error);
   }
 );
