@@ -22,14 +22,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -77,96 +70,112 @@ function ServiceCard({
     .join(", ");
 
   return (
-    <Card className="flex flex-col overflow-hidden border-border/80 shadow-sm transition-shadow hover:shadow-md">
-      <div className="relative aspect-[16/10] w-full bg-muted">
-        {cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cover}
-            alt=""
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
-            No preview
+    <Card className="overflow-hidden border-border/80 shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
+        <div className="relative w-[min(38%,11rem)] shrink-0 self-start sm:w-44 md:w-52">
+          <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
+            {cover ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={cover}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="flex aspect-video w-full items-center justify-center text-[10px] text-muted-foreground sm:text-xs">
+                No preview
+              </div>
+            )}
+            <div className="absolute left-1.5 top-1.5 flex max-w-[calc(100%-3rem)] flex-wrap gap-1 sm:left-2 sm:top-2">
+              {service.isProSeller ? (
+                <Badge className="px-1 py-0 text-[9px] sm:text-[10px]">Pro</Badge>
+              ) : null}
+              {service.isTopRated ? (
+                <Badge variant="secondary" className="px-1 py-0 text-[9px] sm:text-[10px]">
+                  Top rated
+                </Badge>
+              ) : null}
+              {service.isFeatured ? (
+                <Badge
+                  variant="outline"
+                  className="border-amber-500/60 px-1 py-0 text-[9px] text-amber-700 dark:text-amber-400 sm:text-[10px]"
+                >
+                  Featured
+                </Badge>
+              ) : null}
+            </div>
+            <div className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1 py-0.5 text-[10px] font-medium tabular-nums text-white sm:bottom-2 sm:right-2 sm:text-[11px]">
+              {service.deliveryTime}d
+            </div>
           </div>
-        )}
-        <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-          {service.isProSeller ? (
-            <Badge className="text-[10px]">Pro</Badge>
-          ) : null}
-          {service.isTopRated ? (
-            <Badge variant="secondary" className="text-[10px]">
-              Top rated
-            </Badge>
-          ) : null}
-          {service.isFeatured ? (
-            <Badge variant="outline" className="border-amber-500/60 text-[10px] text-amber-700 dark:text-amber-400">
-              Featured
-            </Badge>
-          ) : null}
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:gap-2">
+          <CardTitle className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
+            {service.title}
+          </CardTitle>
+
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground sm:gap-x-3">
+            <span className="inline-flex items-center gap-1">
+              <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400 sm:h-3.5 sm:w-3.5" aria-hidden />
+              <span className="font-medium text-foreground">
+                {service.rating != null ? service.rating.toFixed(1) : "—"}
+              </span>
+              <span>({service.ratingCount} reviews)</span>
+            </span>
+            <span className="hidden text-muted-foreground/70 sm:inline" aria-hidden>
+              •
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <Clock className="h-3 w-3 shrink-0 sm:h-3.5 sm:w-3.5" aria-hidden />
+              {service.deliveryTime} day{service.deliveryTime === 1 ? "" : "s"} delivery
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Avatar className="h-7 w-7 shrink-0 sm:h-8 sm:w-8">
+              <AvatarImage src={service.freelancer.avatar ?? undefined} alt="" />
+              <AvatarFallback className="text-[10px] sm:text-xs">
+                {service.freelancer.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-medium sm:text-sm">{service.freelancer.name}</p>
+              {location ? (
+                <p className="flex items-center gap-1 truncate text-[11px] text-muted-foreground/90 sm:text-xs">
+                  <MapPin className="h-3 w-3 shrink-0" aria-hidden />
+                  <span className="truncate">{location}</span>
+                </p>
+              ) : null}
+            </div>
+          </div>
+
+          <CardDescription className="line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-[13px]">
+            {service.description}
+          </CardDescription>
+
+          <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-2 sm:pt-2.5">
+            <div className="text-sm font-semibold tabular-nums">
+              {service.isCustomPricing ? (
+                <span className="text-muted-foreground">Custom quote</span>
+              ) : service.basePrice != null ? (
+                <span>
+                  {service.currency} {service.basePrice.toFixed(0)}
+                </span>
+              ) : (
+                <span className="text-muted-foreground">Contact for price</span>
+              )}
+            </div>
+            <Button size="sm" variant="default" className="shrink-0" onClick={() => onViewDetails(service.id)}>
+              View details
+            </Button>
+          </div>
         </div>
       </div>
-      <CardHeader className="space-y-1 pb-2">
-        <CardTitle className="line-clamp-2 text-base leading-snug">
-          {service.title}
-        </CardTitle>
-        <CardDescription className="line-clamp-2 text-xs">
-          {service.description}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-1 flex-col gap-3 pb-3">
-        <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={service.freelancer.avatar ?? undefined} alt="" />
-            <AvatarFallback className="text-xs">
-              {service.freelancer.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">{service.freelancer.name}</p>
-            {location ? (
-              <p className="flex items-center gap-1 truncate text-xs text-muted-foreground">
-                <MapPin className="h-3 w-3 shrink-0" aria-hidden />
-                <span className="truncate">{location}</span>
-              </p>
-            ) : null}
-          </div>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden />
-            <span className="font-medium text-foreground">
-              {service.rating != null ? service.rating.toFixed(1) : "—"}
-            </span>
-            <span>({service.ratingCount})</span>
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" aria-hidden />
-            {service.deliveryTime} day{service.deliveryTime === 1 ? "" : "s"}
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter className="mt-auto flex items-center justify-between border-t bg-muted/30 px-6 py-3">
-        <div className="text-sm font-semibold">
-          {service.isCustomPricing ? (
-            <span className="text-muted-foreground">Custom quote</span>
-          ) : service.basePrice != null ? (
-            <span>
-              {service.currency} {service.basePrice.toFixed(0)}
-            </span>
-          ) : (
-            <span className="text-muted-foreground">Contact for price</span>
-          )}
-        </div>
-        <Button size="sm" variant="default" onClick={() => onViewDetails(service.id)}>
-          View details
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
@@ -501,26 +510,37 @@ export function SubcategoryMarketplace({
 
       <div
         className={cn(
-          "grid gap-4 sm:grid-cols-2 xl:grid-cols-3",
+          "mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-4",
           isLoading || isFetching ? "opacity-70" : ""
         )}
       >
         {isLoading
           ? Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i} className="overflow-hidden">
-                <div className="aspect-[16/10] animate-pulse bg-muted" />
-                <CardHeader>
-                  <div className="h-4 w-[70%] animate-pulse rounded bg-muted" />
-                  <div className="mt-2 h-3 w-full animate-pulse rounded bg-muted" />
-                </CardHeader>
-                <CardContent>
-                  <div className="h-8 w-full animate-pulse rounded bg-muted" />
-                </CardContent>
+              <Card key={i} className="overflow-hidden">
+                <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
+                  <div className="w-[min(38%,11rem)] shrink-0 sm:w-44 md:w-52">
+                    <div className="aspect-video animate-pulse rounded-md bg-muted" />
+                  </div>
+                  <div className="flex min-w-0 flex-1 flex-col gap-2 py-0.5">
+                    <div className="h-4 w-[72%] animate-pulse rounded bg-muted sm:h-5" />
+                    <div className="h-3 w-40 animate-pulse rounded bg-muted" />
+                    <div className="flex items-center gap-2 pt-1">
+                      <div className="h-7 w-7 shrink-0 animate-pulse rounded-full bg-muted sm:h-8 sm:w-8" />
+                      <div className="h-3 flex-1 animate-pulse rounded bg-muted" />
+                    </div>
+                    <div className="h-3 w-full animate-pulse rounded bg-muted" />
+                    <div className="mt-1 h-3 w-[88%] animate-pulse rounded bg-muted" />
+                    <div className="mt-auto flex justify-between gap-2 border-t border-border/60 pt-2">
+                      <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+                      <div className="h-8 w-24 animate-pulse rounded-md bg-muted" />
+                    </div>
+                  </div>
+                </div>
               </Card>
             ))
           : services.length === 0
             ? (
-                <div className="col-span-full flex flex-col items-center justify-center rounded-xl border border-dashed py-16 text-center">
+                <div className="flex flex-col items-center justify-center rounded-xl border border-dashed py-16 text-center">
                   <p className="text-muted-foreground max-w-md text-sm">
                     No published services in this subcategory yet. Try another subcategory from the
                     sidebar, or widen your search and price filters.
