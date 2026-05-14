@@ -122,6 +122,8 @@ export interface MarketplaceFreelancingServiceListItem {
   isFeatured: boolean;
   badges: string[];
   gallery?: string[];
+  /** Canonical `https://www.youtube.com/embed/{id}` when set. */
+  videoIntroduction?: string | null;
   rating?: number | null;
   ratingCount: number;
   completionRate: number;

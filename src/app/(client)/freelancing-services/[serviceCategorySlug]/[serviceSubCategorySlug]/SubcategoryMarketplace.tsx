@@ -48,6 +48,7 @@ import {
   ServiceStatus,
 } from "@/lib/modules/freelancingService/freelancingService.types";
 import { cn } from "@/lib/utils";
+import { getYoutubeEmbedSrc, YOUTUBE_EMBED_ALLOW } from "@/lib/youtubeVideoIntroduction";
 
 export type SubcategoryMarketplaceProps = {
   categoryId: string;
@@ -65,52 +66,64 @@ function ServiceCard({
   onViewDetails: (id: string) => void;
 }) {
   const cover = service.gallery?.[0];
+  const embedSrc = getYoutubeEmbedSrc(service.videoIntroduction);
   const location = [service.freelancer.city, service.freelancer.country]
     .filter(Boolean)
     .join(", ");
 
   return (
-    <Card className="overflow-hidden border-border/80 shadow-sm transition-shadow hover:shadow-md">
-      <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
-        <div className="relative w-[min(38%,11rem)] shrink-0 self-start sm:w-44 md:w-52">
-          <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
-            {cover ? (
+    <Card className="gap-0 overflow-hidden border-border/80 py-0 shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex w-full flex-col">
+        {/* Media on top, full card width, 16:9 */}
+        <div className="relative w-full shrink-0">
+          <div className="relative aspect-video w-full overflow-hidden bg-black">
+            {embedSrc ? (
+              <iframe
+                title={`${service.title} — introduction video`}
+                src={embedSrc}
+                className="absolute inset-0 block h-full w-full border-0"
+                allow={YOUTUBE_EMBED_ALLOW}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            ) : cover ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={cover}
                 alt=""
-                className="h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
               />
             ) : (
-              <div className="flex aspect-video w-full items-center justify-center text-[10px] text-muted-foreground sm:text-xs">
+              <div className="absolute inset-0 flex items-center justify-center bg-muted px-2 text-center text-[10px] text-muted-foreground sm:text-xs">
                 No preview
               </div>
             )}
-            <div className="absolute left-1.5 top-1.5 flex max-w-[calc(100%-3rem)] flex-wrap gap-1 sm:left-2 sm:top-2">
+            <div className="pointer-events-none absolute left-2 top-2 z-10 flex max-w-[calc(100%-3rem)] flex-wrap gap-1 sm:left-3 sm:top-3">
               {service.isProSeller ? (
-                <Badge className="px-1 py-0 text-[9px] sm:text-[10px]">Pro</Badge>
+                <Badge className="pointer-events-auto px-1 py-0 text-[9px] sm:text-[10px]">Pro</Badge>
               ) : null}
               {service.isTopRated ? (
-                <Badge variant="secondary" className="px-1 py-0 text-[9px] sm:text-[10px]">
+                <Badge variant="secondary" className="pointer-events-auto px-1 py-0 text-[9px] sm:text-[10px]">
                   Top rated
                 </Badge>
               ) : null}
               {service.isFeatured ? (
                 <Badge
                   variant="outline"
-                  className="border-amber-500/60 px-1 py-0 text-[9px] text-amber-700 dark:text-amber-400 sm:text-[10px]"
+                  className="pointer-events-auto border-amber-500/60 px-1 py-0 text-[9px] text-amber-700 dark:text-amber-400 sm:text-[10px]"
                 >
                   Featured
                 </Badge>
               ) : null}
             </div>
-            <div className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1 py-0.5 text-[10px] font-medium tabular-nums text-white sm:bottom-2 sm:right-2 sm:text-[11px]">
+            <div className="pointer-events-none absolute bottom-2 right-2 z-10 rounded bg-black/80 px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-white sm:text-[11px]">
               {service.deliveryTime}d
             </div>
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:gap-2">
+        <div className="flex flex-col gap-1.5 p-3 sm:gap-2 sm:p-4">
           <CardTitle className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
             {service.title}
           </CardTitle>
@@ -191,6 +204,7 @@ function ServiceDetailDialog({
 }) {
   const { data, isLoading, isError, error } = useGetFreelancingServiceById(serviceId ?? "");
   const service = data?.data as MarketplaceFreelancingServiceDetail | undefined;
+  const detailIntroSrc = service ? getYoutubeEmbedSrc(service.videoIntroduction) : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -262,6 +276,22 @@ function ServiceDetailDialog({
                 </div>
               </div>
               <Separator />
+              {detailIntroSrc ? (
+                <div>
+                  <h4 className="mb-2 font-medium">Introduction video</h4>
+                  <div className="relative aspect-video w-full overflow-hidden rounded-md bg-muted">
+                    <iframe
+                      title="Service introduction video"
+                      src={detailIntroSrc}
+                      className="absolute inset-0 h-full w-full border-0"
+                      allow={YOUTUBE_EMBED_ALLOW}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                </div>
+              ) : null}
               <div>
                 <h4 className="mb-1 font-medium">About this service</h4>
                 <p className="text-muted-foreground whitespace-pre-wrap text-sm leading-relaxed">
@@ -514,14 +544,12 @@ export function SubcategoryMarketplace({
           isLoading || isFetching ? "opacity-70" : ""
         )}
       >
-        {isLoading
+          {isLoading
           ? Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <div className="flex gap-3 p-3 sm:gap-4 sm:p-4">
-                  <div className="w-[min(38%,11rem)] shrink-0 sm:w-44 md:w-52">
-                    <div className="aspect-video animate-pulse rounded-md bg-muted" />
-                  </div>
-                  <div className="flex min-w-0 flex-1 flex-col gap-2 py-0.5">
+              <Card key={i} className="gap-0 overflow-hidden py-0">
+                <div className="flex flex-col">
+                  <div className="aspect-video w-full animate-pulse bg-muted" />
+                  <div className="flex flex-col gap-2 p-3 sm:p-4">
                     <div className="h-4 w-[72%] animate-pulse rounded bg-muted sm:h-5" />
                     <div className="h-3 w-40 animate-pulse rounded bg-muted" />
                     <div className="flex items-center gap-2 pt-1">
