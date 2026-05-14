@@ -5,6 +5,18 @@ import { columns } from "./_components/columns";
 import { Plus } from "lucide-react";
 import { RefreshButton } from "./_components/RefreshButton";
 
+/** Admin list must be fresh; avoids Next static prerender + misleading build logs. */
+export const dynamic = "force-dynamic";
+
+function isDynamicServerUsageError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "digest" in error &&
+    (error as { digest?: string }).digest === "DYNAMIC_SERVER_USAGE"
+  );
+}
+
 async function getCategories() {
   try {
     const res = await fetch(`${API.CATEGORIES.GET_ALL}`, {
@@ -21,6 +33,9 @@ async function getCategories() {
     const data = await res.json();
     return data as ServiceCategoryResponse;
   } catch (error) {
+    if (isDynamicServerUsageError(error)) {
+      throw error;
+    }
     console.error("Error fetching categories:", error);
     // Return empty data structure on error
     return {
