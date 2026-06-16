@@ -21,7 +21,6 @@ export const useAttemptLogIn = () => {
       // router.push("/");
     } catch (error) {
       setError(error instanceof Error ? error.message : "An unknown error occurred");
-      toast.error("Failed to log in. Please try again.");
     } finally {
       setIsLoading(false);
     }
