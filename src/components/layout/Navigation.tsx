@@ -2,7 +2,7 @@
 "use client";
 
 import DynamicNavItem from "./DynamicNavItem";
-import { Users, Search, Star, Menu, X } from "lucide-react";
+import { Users, Search, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -92,13 +92,6 @@ export default function Navigation() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               <Link 
-                href="/freelancer"
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
-              >
-                <Users className="w-4 h-4" />
-                <span>Switch to Freelancer Mode</span>
-              </Link>
-              <Link 
                 href="/freelancing-services" 
                 className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-1"
               >
@@ -183,14 +176,6 @@ export default function Navigation() {
                     >
                       <Search className="w-5 h-5" />
                       <span className="text-lg">Find Jobs</span>
-                    </Link>
-                    
-                    <Link 
-                      href="/freelancer" 
-                      className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors flex items-center space-x-3 p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
-                    >
-                      <Star className="w-5 h-5" />
-                      <span className="text-lg">Become a Freelancer</span>
                     </Link>
                   </div>
 
