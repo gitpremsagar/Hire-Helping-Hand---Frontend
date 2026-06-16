@@ -40,13 +40,7 @@ interface AxiosErrorResponse {
 export const authService = {
   getRefreshedAccessToken: async (): Promise<GetRefreshedAccessTokenResponse> => {
     try {
-      // #region agent log
-      fetch('http://127.0.0.1:7406/ingest/40ae5950-4682-49ea-8699-f38e2c2550b6',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'45fb50'},body:JSON.stringify({sessionId:'45fb50',location:'auth.service.ts:getRefreshedAccessToken',message:'attempting token refresh',data:{url:API.AUTH.GET_REFRESHED_ACCESS_TOKEN,pageOrigin:typeof window!=='undefined'?window.location.origin:null},timestamp:Date.now(),hypothesisId:'H3-H4'})}).catch(()=>{});
-      // #endregion
       const response = await customAxios.post(API.AUTH.GET_REFRESHED_ACCESS_TOKEN);
-      // #region agent log
-      fetch('http://127.0.0.1:7406/ingest/40ae5950-4682-49ea-8699-f38e2c2550b6',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'45fb50'},body:JSON.stringify({sessionId:'45fb50',location:'auth.service.ts:getRefreshedAccessToken',message:'token refresh succeeded',data:{success:response.data?.success},timestamp:Date.now(),hypothesisId:'H5'})}).catch(()=>{});
-      // #endregion
       return response.data;
     } catch (error) {
       console.error("Get refreshed access token error:", error);
@@ -69,9 +63,6 @@ export const authService = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     try {
       const response = await customAxios.post(API.AUTH.LOGIN, data);
-      // #region agent log
-      fetch('http://127.0.0.1:7406/ingest/40ae5950-4682-49ea-8699-f38e2c2550b6',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'45fb50'},body:JSON.stringify({sessionId:'45fb50',location:'auth.service.ts:login',message:'login response received',data:{success:response.data?.success,hasSetCookie:!!response.headers['set-cookie'],pageOrigin:typeof window!=='undefined'?window.location.origin:null,apiUrl:API.AUTH.LOGIN},timestamp:Date.now(),hypothesisId:'H2-H4'})}).catch(()=>{});
-      // #endregion
       return response.data;
     } catch (error) {
       console.error("Login error:", error);
